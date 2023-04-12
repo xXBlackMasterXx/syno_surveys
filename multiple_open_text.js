@@ -1,7 +1,12 @@
 function multiple_open_text({ question_codes, numerical_validation, text_validation } = {}) {
   var question_cards = [];
+  var visible_question_codes = [];
   question_codes.forEach((question_code) => {
-    question_cards.push(document.querySelector(`#q_${question_code}_card`));
+    var card = document.querySelector(`#q_${question_code}_card`);
+    if(card != null) {
+      question_cards.push(card);
+      visible_question_codes.push(question_code);
+    }
   });
 
   // Create an object to save open text information
@@ -21,7 +26,7 @@ function multiple_open_text({ question_codes, numerical_validation, text_validat
       question_card.remove();
     }
 
-    open_texts[question_codes[index]] = free_text;
+    open_texts[visible_question_codes[index]] = free_text;
 
   });
 
@@ -29,38 +34,50 @@ function multiple_open_text({ question_codes, numerical_validation, text_validat
     question_cards[0].insertAdjacentHTML(
       "beforebegin",
       `<div class="question card mb-5 px-4 pt-3 pb-4 border-0 bg-white sticky-top" style="padding-top: 15px !important;"><div class="progress" style="height: 20px; position: sticky; top: 0px; z-index:100">
-    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="progressbar_sum"></div>
+    <div class="progress-bar progress-bar-striped progress-bar-animated font-weight-bold" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="progressbar_sum"></div>
     </div><h5 class="text-center" id="progressbar_remaining" style="padding: 15px !important;">Remaining: ${numerical_validation["required_sum"]}</h5></div>`
     );
   }
 
-
-
   function updateProgress(now, min, max) {
     const percentage = ((now - min) / (max - min)) * 100;
     const progressBar = document.querySelector("#progressbar_sum");
-    const progressBarRemaining = document.querySelector("#progressbar_remaining")
+    const progressBarRemaining = document.querySelector("#progressbar_remaining");
     progressBar.setAttribute('aria-valuenow', now);
     progressBar.setAttribute('aria-valuemin', min);
     progressBar.setAttribute('aria-valuemax', max);
     progressBar.style.width = `${percentage}%`;
-    // progressBar.textContent = `${now}%`;
     progressBar.textContent = `${now}/${numerical_validation["required_sum"]}`;
     progressBarRemaining.textContent = `Remaining: ${numerical_validation["required_sum"] - now}`;
-    if (percentage <= 50) {
+    if (percentage >= 0 && percentage <= 49) {
       progressBar.classList.remove('bg-info', 'bg-primary', 'bg-success', 'bg-danger');
       progressBar.classList.add('bg-warning');
-    } else if (percentage <= 99) {
+      progressBarRemaining.classList.remove("text-danger", "text-success", "font-weight-bold", "animate__animated", "animate__headShake");
+    } else if (percentage >= 50 && percentage <= 99) {
       progressBar.classList.remove('bg-warning', 'bg-primary', 'bg-success', 'bg-danger');
       progressBar.classList.add('bg-info');
+      progressBarRemaining.classList.remove("text-danger", "text-success", "font-weight-bold", "animate__animated", "animate__headShake");
     } else if (percentage == 100) {
       progressBar.classList.remove('bg-warning', 'bg-info', 'bg-primary', 'bg-danger');
       progressBar.classList.add('bg-success');
+      progressBarRemaining.classList.remove("text-danger", "font-weight-bold", "animate__animated", "animate__headShake");
+      progressBarRemaining.classList.add('text-success', 'font-weight-bold');
+      progressBarRemaining.textContent = 'Completed';
     } else {
       progressBar.classList.remove('bg-warning', 'bg-info', 'bg-primary', 'bg-success');
       progressBar.classList.add('bg-danger');
+      progressBarRemaining.classList.remove('text-success', 'font-weight-bold');
+      progressBarRemaining.classList.add("text-danger", "font-weight-bold", "animate__animated", "animate__headShake");
     }
   }
+
+  function loadAnimateCSS() {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css";
+    document.head.appendChild(link);
+  }
+  
 
   function handle_error_message(key, input, message) {
     var input_container = input;
@@ -145,6 +162,7 @@ function multiple_open_text({ question_codes, numerical_validation, text_validat
 
       // Set up the total sum if is required
       if (numerical_validation["required_sum"] !== undefined) {
+        loadAnimateCSS();
         sum = 0;
         Object.values(open_texts).forEach((open_text) => {
           sum += Number(open_text.value);
@@ -163,7 +181,7 @@ function multiple_open_text({ question_codes, numerical_validation, text_validat
       if (numerical_validation["required_sum"] !== undefined && sum != numerical_validation["required_sum"]) {
         e.preventDefault();
         error=true;
-        document.querySelector("#progressbar_remaining").classList.add("text-danger", "font-weight-bold");
+
         async function playAudio() {
           const audio = new Audio('https://dk8uke8mqjln7.cloudfront.net/526879/baabee2368e0b718feb12d98af458dd9_.mp3');
           await audio.play();
