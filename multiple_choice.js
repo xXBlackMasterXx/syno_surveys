@@ -1,5 +1,3 @@
-"use strict";
-
 function multiple_choice({ question_code, schema, randomize, array_filter, hide_answers, validation } = {}) {
     var question_card = document.querySelector("#q_" + question_code + "_card");
     var options_container = question_card.querySelector("#p_" + question_code);
@@ -312,3 +310,43 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
         });
     });
 }
+
+multiple_choice({
+    /* Question code of the multiple choice to set up */
+    question_code: "Q1",
+    /* Open text question code to dump the schema */
+    schema: "Q1xSCHEMA",
+    /* If randomization is required */
+    randomize: {
+        /* Question code of the filter schema */
+        filter_schema: "Q0xSCHEMA",
+        /* OR */
+        /* Define list of answer codes */
+        answer_groups: [[1, 2]],
+        /* If true, groups will be randomize each other, if false, just elements inside groups 
+        are randimized */
+        randomize_groups: false
+    },
+    /* If array filter is required */
+    array_filter: {
+        /* Question code of the filter */
+        filter: "Q0",
+        /* Question code of filter's schema */
+        filter_schema: "Q0xSCHEMA",
+        /* If inclusive, keeps the selected options in filter, if exclusive, will exclude selected in filter
+        Answer options that didn't appeared in filter_schema are ignored for array filter process */
+        type: "inclusive"
+    },
+    /* Answer codes to be hidden */
+    hide_answers: [1, 2],
+    /* If validation for checked options are required */
+    validation: {
+        /* Define a require amount of checks */
+        n_required: 1,
+        /* OR */
+        /* Define a minimum checked options */
+        min_limit: 1,
+        /* Define a maximum checked options */
+        max_limit: 2
+    }
+});

@@ -143,3 +143,32 @@ function single_choice({question_code, schema, randomize, array_filter, hide_ans
         }
     }
 }
+
+single_choice({
+    /* Question code to apply these settings */
+    question_code: "Q1",
+    /* Open text question code to dump the schema */
+    schema: "Q1xSCHEMA",
+    /* Use if randomization is required */
+    randomize: {
+        /* Filter based on previous question */
+        filter_schema: "Q0xSCHEMA",
+        /* OR */
+        /* Set answer codes by groups */
+        answer_groups: [[1, 2]],
+        /* If true, randomize between groups, if false, just randomize inside groups */
+        randomize_groups: true
+    },
+    /* Use if array filter is required */
+    array_filter: {
+        /* Question code of the filter radio/checkboxes */
+        filter: "Q0",
+        /* Open text schema of the filter */
+        filter_schema: "Q0xSCHEMA",
+        /* If inclusive, will keep the selected option in filter, if exclusive, answers will be excluded. 
+        Not listed answer codes in schema will be ignored for the array filter process */
+        type: "inclusive"
+    },
+    /* Answer codes to hide */
+    hide_answers: [1, 2]
+});
