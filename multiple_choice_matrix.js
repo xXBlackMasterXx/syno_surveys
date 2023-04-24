@@ -497,4 +497,4 @@ multiple_choice_matrix({
         /* Set a maximum amount of checked options per row */
         max_limit: 3
     }
-})
+});

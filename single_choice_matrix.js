@@ -71,7 +71,44 @@ function single_choice_matrix({ question_code, randomize, array_filter, exclusiv
 
     /* RANDOMIZATION */
     if (randomize !== undefined) {
+        if(randomize["rows"] !== undefined) {
+            if(randomize["filter_schema" !== undefined]){
+                /* RANDOMIZE BASED ON PREVIOUS QUESTION */
+                var filter;
+                var filtered_positions = [];
+                var new_positions = [];
+                var j=0;
 
+                response.answers.forEach((answer) => {
+                    if(answer.code == randomize["filter_schema"]) {
+                        filter = answer.value.split(",");
+                    }
+                });
+                
+                
+                var rows_codes = Object.keys(answer_options);
+                filter.forEach((filtered_position) => {
+                    if(rows_codes.includes(filtered_position)) {
+                        filtered_positions.push(filtered_position);
+                    }
+                });
+
+                Object.keys(answer_options).forEach((row_code, index) => {
+                    if(filtered_positions.includes(row_code)){
+                        new_positions.push(filtered_positions[j]);
+                        j++;
+                    } else {
+                        new_positions.push(row_code);
+                    }
+                });
+
+                rows_codes.forEach((row_code) => {
+                    if(row_code !== 0){
+                        answer_options[Object.keys(answer_options)[0]]["rowNode"].remove();
+                    }
+                })
+            }
+        }
     }
 
 
@@ -327,4 +364,4 @@ single_choice_matrix({
         /* Define column codes to be hidden */
         columns: [2, 4]
     }
-})
+});

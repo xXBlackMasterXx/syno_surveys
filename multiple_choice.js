@@ -233,7 +233,7 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
                     options_container.insertAdjacentHTML(
                         "beforebegin",
                         `<span class="d-block custom-error pb-1 text-center" id="feedback_${question_code}">
-                          <span class="form-error-message text-danger">${translation.replace("{n}", String(validation["n_required"]))}</span>
+                          <span class="form-error-message text-danger">${translation.replace("{n}", String(validation["min_limit"]))}</span>
                         </span>`
                     );
 

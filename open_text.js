@@ -132,7 +132,7 @@ function open_text({ question_code, array_filter } = {}) {
 
 open_text({
     question_code: "Q7",
-    array_filter: {
+    visibility_toggler: {
         matrix: {
             filter: "Q6",
             coordinates: [[2, 2], [2, 3]]

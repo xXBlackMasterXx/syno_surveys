@@ -267,7 +267,7 @@ multiple_open_text({
   },
   /* OR */
   /* Define a word validation */
-  text_validation: {
+  /* text_validation: {
     required_words: 3 // Set a required amount of words per textbox
-  }
+  } */
 });
