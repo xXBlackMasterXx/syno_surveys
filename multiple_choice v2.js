@@ -1,34 +1,34 @@
-function multiple_choice({ question_code, schema, randomize, array_filter, hide_answers, validation } = {}) {
+function multiple_choice({ question_code, schema, randomize, array_filter, hide_answers, validation, toggle_visibility } = {}) {
     // Select the question card
-    const question_card = $(`#q_${question_code}_card`);
-    // If question code doesn't exists
-    if (question_card.length == 0) {
+    const question_card = document.querySelector(`#q_${question_code}_card`);
+    // If answer code doesn't exists
+    if (question_card === undefined){ 
         alert(`Question card with code "${question_code}" not found.`);
         return;
     }
     // Select the options container
-    const answer_options_container = question_card.find(`#p_${question_code}`);
+    const answer_options_container = question_card.querySelector(`#p_${question_code}`);
     // Select all form-check elements
-    const form_checks = question_card.find('.form-check');
+    const form_checks = question_card.querySelectorAll(".form-check");
     // If question doesn't have answer options
-    if (form_checks.length == 0) {
+    if (form_checks === undefined) {
         alert(`No answer options found for question with code "${question_code}".`);
         return;
     }
     // Create an object to store the answer options
     let answer_options = {};
     // Loop through each form-check element
-    form_checks.each((index, form_check) => {
+    form_checks.forEach((form_check, index) => {
         // Select the input element
-        const input = $(form_check).find('input');
+        const input = form_check.querySelector("input");
         // Get the value of the input element
-        const answer_code = input.val();
+        const answer_code = input.value;
         // Get the label text
-        const label = $(form_check).find('label > div > div').text().split('\n')[0].trim();
+        const label = form_check.querySelector("label > div > div").innerText;
         // Select the open text input element
-        const open_text = $(form_check).find('label > div:nth-child(2) > input');
+        const open_text = form_check.querySelector("label > div:nth-child(2) > input");
         // Add the answer option to the answer_options object
-        answer_options[answer_code] = { form_check, input, label, open_text };
+        answer_options[answer_code] = { "form_check": form_check, "input": input, "label": label, "open_text": open_text };
     });
 
     // No randomization
@@ -37,18 +37,45 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
     if (schema !== undefined) {
         console.log("Dump order outside randomization");
         // Find the element with the ID matching the schema and add "_1"
-        // Use the jQuery selector to select the element and get the first (and only) item in the array
-        let dump_at = $(`#p_${schema}_1`);
+        // Use the CSS selector to select the schema open text
+        const dump_at = document.querySelector(`#p_${schema}_1`);
 
         // If the element does not exist, show an error message
-        if (dump_at.length == 0) {
+        if (dump_at === undefined) {
             alert(`There is no such ${schema} open text to save the schema`);
         }
         // Otherwise, set the value of the element to the comma-separated list of answer options
         else {
-            dump_at.val(Object.keys(answer_options).toString());
+            dump_at.value = Object.keys(answer_options).toString();
         }
     }
+
+    function autocheck_free_text() {
+        for (let [key, value] of Object.entries(answer_options)) {
+            if (value.open_text != null) {
+                value.open_text.addEventListener("input", (e) => {
+                    if (e.target.value != "") {
+                        value.input.checked = true;
+                    } else {
+                        value.input.checked = false;
+                    }
+                });
+            }
+        }
+    }
+
+    function clear_unchecked() {
+        for (let [key, value] of Object.entries(answer_options)) {
+            if (value.open_text != null && value.input.checked == false && value.open_text.value != "") {
+                value.open_text.value = "";
+            }
+        }
+    }
+
+    window.addEventListener("load", autocheck_free_text);
+    question_card.addEventListener("change", clear_unchecked);
+    window.addEventListener("load", autocheck_free_text);
+    question_card.addEventListener("change", clear_unchecked);
 
     /* Here goes the randomization code */
     /* RANDOMIZATION */
@@ -67,9 +94,9 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
                 }
             });
 
-            if (filter === undefined) {
+            if(filter === undefined){
                 alert(`Error: The filter schema "${randomize.filter_schema}" was not found. Please add an open text question with this code below the question where you want to use its random order.`);
-                return;
+                return; 
             }
 
             // Filter out the invalid answer codes from the filter
@@ -87,14 +114,14 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
                 } else {
                     new_positions.push(answer_code);
                 }
-            });
+            })
 
             // Move the answer options to their new positions in the DOM
             new_positions.forEach((new_position) => {
                 // Remove the answer option from its current location
                 answer_options[new_position]["form_check"].remove();
                 // Append the answer option to the options container
-                answer_options_container.append(answer_options[new_position]["form_check"]);
+                answer_options_container.appendChild(answer_options[new_position]["form_check"]);
             });
 
         } else {
@@ -102,37 +129,43 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
 
             // Function to shuffle a list of DOM elements
             function shuffle(DOMList) {
-                // Convert the DOMList to an array using Array.from()
-                const arr = Array.from(DOMList);
-                // Use the sort() method to shuffle the array
-                arr.sort(() => Math.random() - 0.5);
-                // Return the shuffled array
-                return arr;
+                let i, j, temp;
+                for (i = DOMList.length - 1; i > 0; i--) {
+                    j = Math.floor(Math.random() * (i + 1));
+                    temp = DOMList[i];
+                    DOMList[i] = DOMList[j];
+                    DOMList[j] = temp;
+                }
+
+                return DOMList;
             }
 
             // Randomize answer groups
-            var answer_groups = randomize["answer_groups"];
-            var randomize_groups = randomize["randomize_groups"];
-            var randomized_elements = [];
+            let answer_groups = randomize["answer_groups"];
+            let randomize_groups = randomize["randomize_groups"];
+            let randomized_elements = [];
 
             // Shuffle each answer group
             answer_groups.forEach((group) => {
-                randomized_elements.push(...shuffle(group.map(String))); // push answer codes as strings
+                randomized_elements.push(shuffle(group));
             });
 
             // If required, shuffle the order of the answer groups themselves
             if (randomize_groups == true) {
-                randomized_elements = shuffle(randomized_elements);
+                randomized_elements = shuffle([...randomized_elements]);
             }
 
-            var new_positions = [];
-            var j = 0;
+            // Flatten array of randomized elements 
+            randomized_elements = randomized_elements.flat();
+            
+            let j = 0;
+            let new_positions = [];
 
             // Determine the new positions of the answer options after randomization
             Object.keys(answer_options).forEach((answer_code, index) => {
                 console.log(randomized_elements, answer_code);
-                if (randomized_elements.includes(answer_code)) { // check if answer_code is included
-                    new_positions.push(Number(randomized_elements[j]));
+                if (randomized_elements.includes(Number(answer_code))) { // check if answer_code is included
+                    new_positions.push(randomized_elements[j]);
                     j++;
                 } else {
                     new_positions.push(Number(answer_code));
@@ -142,11 +175,11 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
             // Save the new order of answer options to the schema, if applicable
             if (schema !== undefined) {
                 console.log("Dump order inside randomization");
-                var dump_at = $(`#p_${schema}_1`);
-                if (dump_at.length == 0) {
+                const dump_at = document.querySelector(`#p_${schema}_1`);
+                if (dump_at === undefined) {
                     alert(`There is no such ${schema} open text to save the schema`);
                 } else {
-                    dump_at.val(new_positions.toString());
+                    dump_at.value = new_positions.toString();
                 }
             }
 
@@ -155,7 +188,7 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
                 // Remove the answer option from its current location
                 answer_options[new_position]["form_check"].remove();
                 // Append the answer option to the options container
-                answer_options_container.append(answer_options[new_position]["form_check"]);
+                answer_options_container.appendChild(answer_options[new_position]["form_check"]);
             });
         }
     }
@@ -191,75 +224,73 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
         }
 
         /* Loop through each answer option */
-        for (const [key, value] of Object.entries(answer_options)) {
+        for (let [key, value] of Object.entries(answer_options)) {
             /* If the filter type is inclusive and the answer option is not in the filter answers but is in the filter schema, hide the answer option */
             if (array_filter["type"] == "inclusive" && !filter_answers.includes(Number(key)) && filter_schema.includes(key)) {
-                $(value["form_check"]).remove(); // Remove the form-check element containing the answer option
+                value["form_check"].remove(); // Remove the form-check element containing the answer option
             }
-            /* If the filter type is exclusive and the answer option is in the filter answers and is in the filter schema, hide the answer option */
+            /* If the filter type is exclusive and the answer option is in the filter answers and is in the filter schema, hide the answer option */ 
             else if (array_filter["type"] == "exclusive" && filter_answers.includes(Number(key)) && filter_schema.includes(key)) {
-                $(value["form_check"]).remove(); // Remove the form-check element containing the answer option
+                value["form_check"].remove(); // Remove the form-check element containing the answer option
             }
         }
     }
 
-    /* HIDE ANSWER OPTIONS */
+    /* HIDE ANSWER answer_options */
     /* If hide_answers is defined, hide the corresponding answer options */
     if (hide_answers !== undefined) {
         /* Loop through each answer option */
-        for (const [key, value] of Object.entries(answer_options)) {
+        for (let [key, value] of Object.entries(answer_options)) {
             /* If the answer option is in the hide_answers array, hide it */
             if (hide_answers.includes(Number(key))) {
-                $(value["form_check"]).remove(); // Remove the form-check element containing the answer option
+                value["form_check"].remove(); // Remove the form-check element containing the answer option
             }
         }
     }
 
-    /* CHECKBOX VALIDATION */
+    /* CHECKBOX VALIDATIONS */
     if (validation !== undefined) {
         let n_checked;
 
         function count_checked() {
-            n_checked = question_card.find(".form-check > input:checked").length;
+            n_checked = question_card.querySelectorAll(".form-check > input:checked").length;
             /* If max_limit is defined and n_checked is more or equal to max_limit or if n_required is defined and n_checked is more or equal than n_required */
             if ((validation["max_limit"] !== undefined && n_checked >= validation["max_limit"]) || (validation["n_required"] !== undefined && n_checked >= validation["n_required"])) {
-                for (const [key, value] of Object.entries(answer_options)) {
-                    if (!value.input.prop("checked")) {
-                        value.input.prop("disabled", true);
-
-                        if (value.open_text.length != 0) {
-                            value.open_text.val("");
-                            value.open_text.prop("disabled", true);
+                for (let [key, value] of Object.entries(answer_options)) {
+                    if (value.input.checked == false) {
+                        value.input.disabled = true;
+                        if (value.open_text !== undefined) {
+                            value.open_text.value = "";
+                            value.open_text.disabled = true;
                         }
                     }
                 }
             } else {
-                for (const [key, value] of Object.entries(answer_options)) {
-                    if (value.input.prop("disabled")) {
-                        value.input.prop("disabled", false);
-                        if (value.open_text.length != 0) {
-                            value.open_text.prop("disabled", false);
+                for (let [key, value] of Object.entries(answer_options)) {
+                    if (value.input.disabled == true) {
+                        value.input.disabled = false;
+                        if (value.open_text !== undefined) {
+                            value.open_text.disabled = false;
                         }
                     }
                 }
             }
         }
 
-        $(window).on('load', count_checked);
-        $(question_card).on('change', count_checked);
+        window.addEventListener("load", count_checked);
+        question_card.addEventListener("change", count_checked);
 
-        $('#p_next').on('click', function (e) {
-            const feedback = $(`#feedback_${question_code}`);
-
-            const lang = $('html').attr('lang').substring(0, 2);
-            const min_limit_validation = validation["min_limit"] !== undefined && n_checked < validation["min_limit"] && answer_options_container.find('input.exclusive:checked').length == 0;
-            const n_required_validation = validation["n_required"] !== undefined && n_checked < validation["n_required"] && answer_options_container.find('input.exclusive:checked').length == 0;
+        document.querySelector("#p_next").addEventListener("click", (e) => {
+            const feedback = document.querySelector(`#feedback_${question_code}`);
+            const lang = document.querySelector('html').getAttribute('lang').substring(0, 2);
+            const min_limit_validation = validation["min_limit"] !== undefined && n_checked < validation["min_limit"] && answer_options_container.querySelectorAll('input.exclusive:checked').length == 0;
+            const n_required_validation = validation["n_required"] !== undefined && n_checked < validation["n_required"] && answer_options_container.querySelectorAll('input.exclusive:checked').length == 0;
 
             if (validation === undefined) {
                 if (min_limit_validation) {
                     e.preventDefault();
 
-                    if (feedback.length != 0) {
+                    if (feedback !== undefined) {
                         feedback.remove();
                     }
 
@@ -276,18 +307,23 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
 
                     const message = translations[lang] ? translations[lang].replace("{n}", validation["min_limit"]) : translations["en"].replace("{n}", validation["min_limit"]);
 
-                    answer_options_container.before(`<span class="d-block custom-error pb-1 text-center" id="feedback_${question_code}"><span class="form-error-message text-danger">${message}</span></span>`);
+                    answer_options_container.insertAdjacentHTML(
+                        "beforebegin",
+                        `<span class="d-block custom-error pb-1 text-center" id="feedback_${question_code}">
+                          <span class="form-error-message text-danger">${message}</span>
+                        </span>`
+                     );
 
-                    $("html, body").animate({scrollTop: $(question_card).offset().top}, "slow");
+                    question_card.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
                 }
             } else {
                 if (n_required_validation) {
                     e.preventDefault();
 
-                    if (feedback.length != 0) {
+                    if (feedback !== undefined) {
                         feedback.remove();
                     }
-                    
+
                     const translations = {
                         "en": "Please select {n} option(s)",
                         "fr": "Veuillez sélectionner {n} option(s)",
@@ -301,30 +337,82 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
 
                     const message = translations[lang] ? translations[lang].replace("{n}", validation["n_required"]) : translations["en"].replace("{n}", validation["n_required"]);
 
-                    answer_options_container.before(`<span class="d-block custom-error pb-1 text-center" id="feedback_${question_code}"><span class="form-error-message text-danger">${message}</span></span>`);
+                    answer_options_container.insertAdjacentHTML(
+                        "beforebegin",
+                        `<span class="d-block custom-error pb-1 text-center" id="feedback_${question_code}">
+                          <span class="form-error-message text-danger">${message}</span>
+                        </span>`
+                    );
 
-                    $("html, body").animate({scrollTop: $(question_card).offset().top}, "slow");
-
+                    question_card.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
                 }
             }
         });
     }
 
-    // Bug fixing: Exclusive answer options break after using this codes
-    const exclusive_answers = question_card.find('input.exclusive');
-    exclusive_answers.each(function() {
-        $(this).on('change', function() {
-            const is_checked = $(this).prop("checked");
-            const other_options = question_card.find('input').not(this);
-            
-            if(is_checked) {
-            other_options.prop("disabled", true).prop("checked", false);
+    if(toggle_visibility !== undefined){
+        const filter_code = toggle_visibility["filter"];
+        const filter_container = document.querySelector(`#q_${filter_code}_card`);
+        const filter_form_checks = filter_container.querySelector(".form-check");
+        let filter_answer_options = {};
+        filter_form_checks.forEach((form_check, index) => {
+            var input = form_check.querySelector("input");
+            var answer_code = input.value;
+            var label = form_check.querySelector("label > div > div").innerText;
+            var open_text = form_check.querySelector("label > div:nth-child(2) > input");
+            filter_answer_options[answer_code] = { "form_check": form_check, "input": input, "label": label, "open_text": open_text };
+        });
+
+        const answer_codes = toggle_visibility["answer_codes"];
+        let filter_n_checked = 0;
+        
+        answer_codes.forEach((answer_code) => {
+            if(Object.keys(filter_answer_options).includes(answer_code)) {
+                filter_answer_options[answer_code].addEventListener("change", () => {
+                    if(this.input.checked = true){
+                        filter_n_checked++;
+                    } else {
+                        filter_n_checked--;
+                    }
+                });
+            }
+        });
+        
+        if(filter_n_checked > 0){
+            question_card.style.display = "flex";
+        } else {
+            question_card.style.display = "none";
+        }
+
+        document.querySelector("#p_next").addEventListener("click", (e) => {
+            const n_checked = question_card.querySelectorAll(".form-check > input:checked").length;
+
+            if(n_checked == 0){
+                alert(`Please, select an option in ${question_code}`);
+            }
+        });
+    }
+
+    // Bug fixed: Exclusive answer_options break after applying all the codes above
+    exclusive = question_card.querySelectorAll("input.exclusive");
+    exclusive.forEach((button) => {
+        button.addEventListener("change", (e) => {
+            if (button.checked == true) {
+                question_card.querySelectorAll("input").forEach((other_button) => {
+                    if (other_button != button) {
+                        other_button.disabled = true;
+                        other_button.checked = false;
+                    }
+                });
             } else {
-            other_options.prop("disabled", false);
+                question_card.querySelectorAll("input").forEach((other_button) => {
+                    if (other_button != button) {
+                        other_button.disabled = false;
+                    }
+                });
             }
         });
     });
-
 }
 
 multiple_choice({
@@ -349,20 +437,24 @@ multiple_choice({
         filter: "Q0",
         /* Question code of filter's schema */
         filter_schema: "Q0xSCHEMA",
-        /* If inclusive, keeps the selected options in filter, if exclusive, will exclude selected in filter
-        Answer options that didn't appeared in filter_schema are ignored for array filter process */
+        /* If inclusive, keeps the selected answer_options in filter, if exclusive, will exclude selected in filter
+        Answer answer_options that didn't appeared in filter_schema are ignored for array filter process */
         type: "inclusive"
     },
     /* Answer codes to be hidden */
     hide_answers: [1, 2],
-    /* If validation for checked options are required */
+    /* If validation for checked answer_options are required */
     validation: {
         /* Define a require amount of checks */
         n_required: 1,
         /* OR */
-        /* Define a minimum checked options */
+        /* Define a minimum checked answer_options */
         min_limit: 1,
-        /* Define a maximum checked options */
+        /* Define a maximum checked answer_options */
         max_limit: 2
+    }, 
+    toggle_visibility : {
+        filter : "Q2",
+        answer_codes : [1,2]
     }
 });
