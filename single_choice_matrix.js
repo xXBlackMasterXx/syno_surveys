@@ -1,4 +1,5 @@
 function single_choice_matrix({ question_code, randomize, array_filter, exclusive_answers, hide_answers } = {}) {
+    const lang = document.querySelector('html').getAttribute('lang').substring(0, 2);
     var question_card = document.querySelector("#q_" + question_code + "_card");
     var matrix_container = question_card.querySelector("table.matrix");
     // Obtener todas las celdas con la clase .form-check
@@ -128,21 +129,14 @@ function single_choice_matrix({ question_code, randomize, array_filter, exclusiv
                 }
             });
 
-            // console.log("array_filter", filter);
-            // console.log("filter_schema", filter_schema);
-
             // Iterate over all the rows
             for (let [key, value] of Object.entries(answer_options)) {
                 if (array_filter["rows"]["type"] == "inclusive") {
                     if (key != 0 && !filter.includes(key) && filter_schema.includes(key)) {
-                        // console.log(key, value);
-                        // console.log(value[Object.keys(value)[0]]);
                         value[Object.keys(value)[0]]["rowNode"].remove();
                     }
                 } else if (array_filter["rows"]["type"] == "exclusive") {
                     if (key != 0 && filter.includes(key) && filter_schema.includes(key)) {
-                        // console.log(key, value);
-                        // console.log(value[Object.keys(value)[0]]);
                         value[Object.keys(value)[0]]["rowNode"].remove();
                     }
                 }
@@ -163,16 +157,10 @@ function single_choice_matrix({ question_code, randomize, array_filter, exclusiv
                 }
             });
 
-            // console.log("array_filter", filter);
-            // console.log("filter_schema", filter_schema);
-
             for (let [key, value] of Object.entries(answer_options)) {
                 if (array_filter["columns"]["type"] == "inclusive") {
-                    // console.log("row", key)
                     for (let [key2, value2] of Object.entries(value)) {
                         if (!filter.includes(key2) && filter_schema.includes(key2)) {
-                            // console.log("cols", value);
-                            // console.log("col", key2, "value", value2);
                             value2.colNode.remove();
                         }
                     }
@@ -191,7 +179,6 @@ function single_choice_matrix({ question_code, randomize, array_filter, exclusiv
     /* EXCLUSIVE ANSWERS */
     if (exclusive_answers !== undefined) {
         if (exclusive_answers["vertical"] !== undefined) {
-            // console.log("exclusive rows", exclusive_answers);
             matrix_container.addEventListener("change", () => {
                 var row_ids = Object.keys(answer_options)
                 var col_ids = Object.keys(answer_options[row_ids[1]]);
@@ -271,22 +258,22 @@ function single_choice_matrix({ question_code, randomize, array_filter, exclusiv
                         feedback.remove();
                     }
 
-                    let translations = {
+                    const translations = {
                         "en": "Please select an answer for each row",
                         "fr": "Veuillez sélectionner une réponse pour chaque ligne",
                         "de": "Bitte wählen Sie eine Antwort für jede Zeile aus",
                         "it": "Seleziona una risposta per ogni riga",
                         "es": "Por favor, selecciona una respuesta para cada fila",
-                        "no": "Vennligst velg et svar for hver rad",
+                        "nb": "Vennligst velg et svar for hver rad",
                         "sv": "Vänligen välj ett svar för varje rad",
                         "da": "Vælg venligst et svar for hver række"
                     };
 
                     // Detect the language
-                    let lang = navigator.language.substring(0, 2);
+                    // let lang = navigator.language.substring(0, 2);
 
                     // Get the translation for the detected language or use English as fallback
-                    let translation = translations[lang] || translations["en"];
+                    const translation = translations[lang] || translations["en"];
 
                     // Insert the error message
                     matrix_container.insertAdjacentHTML(

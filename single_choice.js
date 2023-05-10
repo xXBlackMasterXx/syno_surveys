@@ -151,11 +151,11 @@ single_choice({
     schema: "Q1xSCHEMA",
     /* Use if randomization is required */
     randomize: {
-        /* Filter based on previous question */
+        /* Randomized based on previous question */
         filter_schema: "Q0xSCHEMA",
         /* OR */
         /* Set answer codes by groups */
-        answer_groups: [[1, 2]],
+        answer_groups: [ [1, 2] ],
         /* If true, randomize between groups, if false, just randomize inside groups */
         randomize_groups: true
     },

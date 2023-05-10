@@ -182,6 +182,8 @@ function multiple_open_text({ question_codes, numerical_validation, text_validat
         e.preventDefault();
         error=true;
 
+        
+
         async function playAudio() {
           const audio = new Audio('https://dk8uke8mqjln7.cloudfront.net/526879/baabee2368e0b718feb12d98af458dd9_.mp3');
           await audio.play();

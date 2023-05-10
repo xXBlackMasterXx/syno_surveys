@@ -446,7 +446,7 @@ multiple_choice({
     /* If validation for checked answer_options are required */
     validation: {
         /* Define a require amount of checks */
-        n_required: 1,
+        n_required: 3,
         /* OR */
         /* Define a minimum checked answer_options */
         min_limit: 1,

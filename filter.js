@@ -12,7 +12,6 @@ function filter({question_code, filter_question, test_mode} = {}) {
     });
 
     if(filter_question["multiple_open_text"] !== undefined) {
-
         /* Clear all the checkboxes */
         for (let [key, value] in myObject.entries()) {
             value.input.checked = false;

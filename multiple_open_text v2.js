@@ -1,4 +1,5 @@
 function multiple_open_text({ question_code, addons, numerical_validation, fill_empty_with, top_of_mind, allow_empty_fields } = {}) {
+  const lang = document.querySelector('html').getAttribute('lang').substring(0, 2);
   const question_card = document.querySelector(`#q_${question_code}_card`);
   if (question_card === null) {
     alert(`Question ${question_code} does not exists`);
@@ -40,8 +41,34 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
     link.href = "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css";
     document.head.appendChild(link);
   }
+  
+  const remaining_translations = {
+    "en": "Remaining",
+    "fr": "Restant",
+    "de": "Verbleibend",
+    "it": "Rimanente",
+    "es": "Restante",
+    "nb": "Gjenstående",
+    "sv": "Kvarvarande",
+    "da": "Tilbageværende"
+  }
+
+  const completed_translations = {
+    "en": "Completed",
+    "fr": "Terminé",
+    "de": "Abgeschlossen",
+    "it": "Completato",
+    "es": "Completado",
+    "nb": "Fullført",
+    "sv": "Färdigställd",
+    "da": "Færdiggjort"
+  };
+
+  const remaining_message = remaining_translations[lang] ? remaining_translations[lang]: remaining_translations["en"];
+  const completed_message = completed_translations[lang] ? completed_translations[lang]: completed_translations["en"];
 
   function updateProgress(now, min, max) {
+
     const percentage = ((now - min) / (max - min)) * 100;
     const progressBar = document.querySelector("#progressbar_sum");
     const progressBarRemaining = document.querySelector("#progressbar_remaining");
@@ -50,7 +77,7 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
     progressBar.setAttribute('aria-valuemax', max);
     progressBar.style.width = `${percentage}%`;
     progressBar.textContent = `${now}/${numerical_validation["required_sum"]}`;
-    progressBarRemaining.textContent = `Remaining: ${numerical_validation["required_sum"] - now}`;
+    progressBarRemaining.textContent = `${remaining_message}: ${numerical_validation["required_sum"] - now}`;
     if (percentage >= 0 && percentage <= 49) {
       progressBar.classList.remove('bg-info', 'bg-primary', 'bg-success', 'bg-danger');
       progressBar.classList.add('bg-warning');
@@ -64,7 +91,7 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
       progressBar.classList.add('bg-success');
       progressBarRemaining.classList.remove("text-danger", "font-weight-bold", "animate__animated", "animate__headShake");
       progressBarRemaining.classList.add('text-success', 'font-weight-bold');
-      progressBarRemaining.textContent = 'Completed';
+      progressBarRemaining.textContent = `${completed_message}`;
     } else {
       progressBar.classList.remove('bg-warning', 'bg-info', 'bg-primary', 'bg-success');
       progressBar.classList.add('bg-danger');
@@ -96,12 +123,19 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
     }
 
     if (numerical_validation !== undefined && numerical_validation.required_sum !== undefined) {
+      
+      async function playAudio() {
+        const audio = new Audio('https://dk8uke8mqjln7.cloudfront.net/526879/baabee2368e0b718feb12d98af458dd9_.mp3');
+        await audio.play();
+      }
+
       loadAnimateCSS();
+
       question_card.insertAdjacentHTML(
         "beforebegin",
         `<div class="question card mb-5 px-4 pt-3 pb-4 border-0 bg-white sticky-top" style="padding-top: 15px !important;"><div class="progress" style="height: 20px; position: sticky; top: 0px; z-index:100">
   <div class="progress-bar progress-bar-striped progress-bar-animated font-weight-bold" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="progressbar_sum"></div>
-  </div><h5 class="text-center" id="progressbar_remaining" style="padding: 15px !important;">Remaining: ${numerical_validation.required_sum}</h5></div>`
+  </div><h5 class="text-center" id="progressbar_remaining" style="padding: 15px !important;">${remaining_message}: ${numerical_validation.required_sum}</h5></div>`
       );
     }
 
@@ -122,21 +156,25 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
     });
   }
 
-  function handle_error_message({ key, value, message }) {
-    delete_error_message({ key: key, value: value });
-    value.input_container.insertAdjacentHTML(
-      "beforebegin",
+  function handle_error_message({ key, target, message, where = "beforebegin"}) {
+    delete_error_message({ key: key, target: target });
+    target.insertAdjacentHTML(
+      where,
       `<span class="d-block custom-error pb-1 text-center" id="feedback_${key}"><span class="form-error-message text-danger">${message}</span></span>`
-    )
-    value.input.classList.add("is-invalid", "text-danger");
+    );
+    if(target.querySelector("input") !== null){
+      target.querySelector("input").classList.add("is-invalid", "text-danger");
+    }
     question_card.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
   }
 
-  function delete_error_message({ key, value }) {
+  function delete_error_message({ key, target }) {
     const feedback = document.querySelector(`#feedback_${key}`);
     if (feedback != null) {
       feedback.remove();
-      value.input.classList.remove("is-invalid", "text-danger");
+      if(target.querySelector("input") !== null){
+        target.querySelector("input").classList.remove("is-invalid", "text-danger");
+      }
     }
   }
 
@@ -145,29 +183,33 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
     if (numerical_validation !== undefined) {
       const max_length = numerical_validation.max_length;
       value.input.setAttribute('inputmode', 'numeric');
-      value.input.addEventListener("input", (e) => {
-        e.target.value = e.target.value.replace(/[^0-9]/g, "");
-        if (max_length !== undefined) {
-          e.target.value = e.target.value.slice(0, max_length);
-        }
 
-        // Sum all open text if required sum is needed
-        if(numerical_validation.required_sum !== undefined) {
-          let total_sum = 0;
-          for (let [key, value] of Object.entries(answer_options)) {
-            total_sum += Number(value.input.value);
-            
-            if(total_sum == numerical_validation.required_sum){
-              reached_sum = true;
-            } else {
-              reached_sum = false;
-            }
-            console.log(`Suma recalculada: ${total_sum}, reached_sum: ${reached_sum}`);
-
-            updateProgress(total_sum, 0, numerical_validation.required_sum);
+      function updateInput(e){
+        value.input.addEventListener("input", (e) => {
+          e.target.value = e.target.value.replace(/[^0-9]/g, "");
+          if (max_length !== undefined) {
+            e.target.value = e.target.value.slice(0, max_length);
           }
-        }
-      });
+    
+          // Sum all open text if required sum is needed
+          if(numerical_validation.required_sum !== undefined) {
+            let total_sum = 0;
+            for (let [key, value] of Object.entries(answer_options)) {
+              total_sum += Number(value.input.value);
+              
+              if(total_sum == numerical_validation.required_sum){
+                reached_sum = true;
+              } else {
+                reached_sum = false;
+              }
+              updateProgress(total_sum, 0, numerical_validation.required_sum);
+            }
+          }
+        });
+      }
+
+      window.addEventListener("load", updateInput);
+      updateInput();
     }
   }
 
@@ -182,15 +224,57 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
 
         if (min_value !== undefined && value.input.value < min_value && value.input.value !== "") {
           e.preventDefault();
-          handle_error_message({ key: key, value: value, message: `Number can't be lesser than ${min_value}` });
+
+          const translations = {
+            "en" : `Number can't be lesser than ${min_value}`,
+            "fr" : `Le nombre ne peut pas être inférieur à ${min_value}`,
+            "de" : `Die Zahl darf nicht kleiner sein als ${min_value}`,
+            "it" : `Il numero non può essere inferiore a ${min_value}`,
+            "es" : `El número no puede ser menor que ${min_value}`,
+            "nb" : `Tallet kan ikke være mindre enn ${min_value}`,
+            "sv" : `Numret kan inte vara mindre än ${min_value}`,
+            "da" : `Tallet kan ikke være mindre end ${min_value}`
+          }
+
+          const message = translations[lang] ? translations[lang]: translations["en"];
+
+          handle_error_message({ key: key, target: value.input_container, message: message });
         } else if (max_value !== undefined && value.input.value > max_value && value.input.value !== "") {
           e.preventDefault();
-          handle_error_message({ key: key, value: value, message: `Number can't be greather than ${max_value}` });
+
+          const translations = {
+            "en" : `Number can't be greather than ${max_value}`,
+            "fr" : `Le nombre ne peut pas être supérieur à ${max_value}`,
+            "de" : `Die Zahl darf nicht größer sein als ${max_value}`,
+            "it" : `Il numero non può essere maggiore di ${max_value}`,
+            "es" : `El número no puede ser mayor que ${max_value}`,
+            "nb" : `Tallet kan ikke være større enn ${max_value}`,
+            "sv" : `Numret kan inte vara större än ${max_value}`,
+            "da" : `Tallet kan ikke være større end ${max_value}`
+          }
+
+          const message = translations[lang] ? translations[lang]: translations["en"];
+          
+          handle_error_message({ key: key, target: value.input_container, message: message });
         } else if (allow_empty_fields !== undefined && allow_empty_fields == false && value.input.value === "") {
           e.preventDefault();
-          handle_error_message({ key: key, value: value, message: "This field can't be blank" });
+
+          const translations = {
+            "en" : "This field can't be blank",
+            "fr" : "Ce champ ne peut pas être vide",
+            "de" : "Dieses Feld darf nicht leer sein",
+            "it" : "Questo campo non può essere vuoto",
+            "es" : "Este campo no puede estar en blanco",
+            "nb" : "Dette feltet kan ikke være tomt",
+            "sv" : "Det här fältet kan inte vara tomt",
+            "da" : "Dette felt kan ikke være tomt"
+          }
+
+          const message = translations[lang] ? translations[lang]: translations["en"];
+
+          handle_error_message({ key: key, target: value.input_container, message: message });
         } else {
-          delete_error_message({ key: key, value: value });
+          delete_error_message({ key: key, target: value.input_container });
         }
         
         if(fill_empty_with !== undefined){
@@ -202,6 +286,23 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
 
       if (required_sum !== undefined && reached_sum == false) {
         e.preventDefault();
+
+        const translations = {
+          "en" : `Total sum must be equal to ${required_sum}`,
+          "fr" : `La somme totale doit être égale à ${required_sum}`,
+          "de" : `Die Gesamtsumme muss gleich ${required_sum} sein`,
+          "it" : `La somma totale deve essere uguale a ${required_sum}`,
+          "es" : `La suma total debe ser igual a ${required_sum}`,
+          "nb" : `Total sum må være lik ${required_sum}`,
+          "sv" : `Den totala summan måste vara lika med ${required_sum}`,
+          "da" : `Den samlede sum skal være lig med ${required_sum}`
+        }
+
+        const message = translations[lang] ? translations[lang]: translations["en"];
+
+        const question_title = question_card.querySelector("h5");
+        handle_error_message({ key: 0, target: question_title, message: message, where : "afterend"});
+        playAudio();
       }
     }
   });
