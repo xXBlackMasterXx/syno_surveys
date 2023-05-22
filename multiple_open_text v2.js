@@ -123,12 +123,6 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
     }
 
     if (numerical_validation !== undefined && numerical_validation.required_sum !== undefined) {
-      
-      async function playAudio() {
-        const audio = new Audio('https://dk8uke8mqjln7.cloudfront.net/526879/baabee2368e0b718feb12d98af458dd9_.mp3');
-        await audio.play();
-      }
-
       loadAnimateCSS();
 
       question_card.insertAdjacentHTML(
@@ -219,6 +213,7 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
       const min_value = numerical_validation.min_value;
       const max_value = numerical_validation.max_value;
       const required_sum = numerical_validation.required_sum;
+      const min_length = numerical_validation.min_length;
 
       for (let [key, value] of Object.entries(answer_options)) {
 
@@ -234,7 +229,7 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
             "nb" : `Tallet kan ikke være mindre enn ${min_value}`,
             "sv" : `Numret kan inte vara mindre än ${min_value}`,
             "da" : `Tallet kan ikke være mindre end ${min_value}`
-          }
+          };
 
           const message = translations[lang] ? translations[lang]: translations["en"];
 
@@ -251,11 +246,29 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
             "nb" : `Tallet kan ikke være større enn ${max_value}`,
             "sv" : `Numret kan inte vara större än ${max_value}`,
             "da" : `Tallet kan ikke være større end ${max_value}`
-          }
+          };
 
           const message = translations[lang] ? translations[lang]: translations["en"];
           
           handle_error_message({ key: key, target: value.input_container, message: message });
+        } else if (min_length !== undefined && value.input.value.length < min_length){
+          e.preventDefault();
+
+          const translations = {
+            "en" : `This field must have at least ${min_length} characters`,
+            "fr" : `Ce champ doit comporter au moins ${min_length} caractères/chiffres`,
+            "de" : `Dieses Feld muss mindestens ${min_length} Zeichen/Ziffern enthalten`,
+            "it" : `Questo campo deve contenere almeno ${min_length} caratteri/cifre`,
+            "es" : `Este campo debe tener al menos ${min_length} caracteres/dígitos`,
+            "nb" : `Dette feltet må ha minst ${min_length} tegn/siffer`,
+            "sv" : `Det här fältet måste ha minst ${min_length} tecken/siffror`,
+            "da" : `Dette felt skal have mindst ${min_length} tegn/cifre`
+          };
+
+          const message = translations[lang] ? translations[lang]: translations["en"];
+
+          handle_error_message({ key : key, target : value.input_container, message : message});
+
         } else if (allow_empty_fields !== undefined && allow_empty_fields == false && value.input.value === "") {
           e.preventDefault();
 
@@ -268,7 +281,7 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
             "nb" : "Dette feltet kan ikke være tomt",
             "sv" : "Det här fältet kan inte vara tomt",
             "da" : "Dette felt kan ikke være tomt"
-          }
+          };
 
           const message = translations[lang] ? translations[lang]: translations["en"];
 
@@ -302,7 +315,6 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
 
         const question_title = question_card.querySelector("h5");
         handle_error_message({ key: 0, target: question_title, message: message, where : "afterend"});
-        playAudio();
       }
     }
   });
@@ -317,7 +329,8 @@ multiple_open_text({
   numerical_validation: {
     min_value: 1,
     max_value: 100,
-    max_length: 3,
+    min_length : 4,
+    max_length: 5,
     required_sum: 100
   },
   fill_empty_with: 0,
