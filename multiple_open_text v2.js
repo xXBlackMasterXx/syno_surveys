@@ -1,4 +1,4 @@
-function multiple_open_text({ question_code, addons, numerical_validation, fill_empty_with, top_of_mind, allow_empty_fields } = {}) {
+function multiple_open_text({ question_code, addons, numerical_validation, fill_empty_with, allow_empty_fields } = {}) {
   const lang = document.querySelector('html').getAttribute('lang').substring(0, 2);
   const question_card = document.querySelector(`#q_${question_code}_card`);
   if (question_card === null) {
@@ -334,6 +334,5 @@ multiple_open_text({
     required_sum: 100
   },
   fill_empty_with: 0,
-  top_of_mind: false,
   allow_empty_fields: true
 });
