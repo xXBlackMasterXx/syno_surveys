@@ -1,15 +1,29 @@
-function maxdiff({ question_code, size } = {}) {
+function maxdiff({ question_code, itemset, card_size, img_height } = {}) {
     // Get the question card
     const question_card = document.querySelector(`#q_${question_code}_card`);
     // Checks if question is found
     if (question_card === null) {
         // If not found, then trigger a message and end the function
-        alert(`Question with code ${question_code} was not found!\n\nPro-tip: Please check if you are using the correct question code or have scripted the question`)
+        alert(`Error: Question with code ${question_code} was not found!\n\nPro-tip: Please check if you are using the correct question code or have scripted the question`)
         return;
     }
 
     // Hide the matrix question
     question_card.querySelector("table").style.display = "none";
+
+    // Replace all placeholders in headers with the images taken from the itemset
+    let headers = Array.from(question_card.querySelectorAll("table > thead > tr > th"));
+    let images = Array.from(response.answers.filter(answer => answer.questionCode == itemset)).map((answer) => answer.value);
+
+    if (headers.length != images.length){
+        alert(`Error: The number of columns in matrix ${question_code} (${headers.length}) do not correspond to the number of images in ${itemset} (${itemset.length})!\n\nPro-tip:\n* Please check that your your matrix ${question_code} has the same number of columns as textfields in ${itemset}.\n* Make sure that all textfields in ${itemset} are being filled with the URL of the images.`)
+    }
+
+    headers.forEach((header, index) => {
+        let item_img = document.createElement("img");
+        item_img.src = images[index]; 
+        header.append(item_img);
+    });
 
     // Get the labels from for the dichotomies.
     let labels = Array.from(question_card.querySelectorAll("table > tbody > tr > th")).map(label_container => {
@@ -45,7 +59,7 @@ function maxdiff({ question_code, size } = {}) {
             chosen_accepted = null;
             
             // Shows the same category buttons in non-active cards
-            document.querySelectorAll("button.accepted:not(.active):not(.d-block)").forEach((alternative) => {
+            question_card.querySelectorAll("button.accepted:not(.active):not(.d-block)").forEach((alternative) => {
                 if(alternative.getAttribute("data-id") !== chosen_rejected) {
                     alternative.classList.remove("d-none");
                     alternative.classList.add("d-block");
@@ -66,7 +80,7 @@ function maxdiff({ question_code, size } = {}) {
             question_card.querySelector(`.form-check > input[id='p_${question_code}_2_${button.getAttribute("data-id")}']`).checked = false;
             chosen_rejected = null;
 
-            document.querySelectorAll("button.rejected:not(.active):not(.d-block)").forEach((alternative) => {
+            question_card.querySelectorAll("button.rejected:not(.active):not(.d-block)").forEach((alternative) => {
                 if(alternative.getAttribute("data-id") !== chosen_accepted) {
                     alternative.classList.remove("d-none");
                     alternative.classList.add("d-block");
@@ -84,7 +98,7 @@ function maxdiff({ question_code, size } = {}) {
             question_card.querySelector(`.form-check > input[id='p_${question_code}_1_${button.getAttribute("data-id")}']`).checked = true;
             chosen_accepted = button.getAttribute("data-id");
 
-            document.querySelectorAll("button.accepted:not(.active):not(.d-none)").forEach((alternative) => {
+            question_card.querySelectorAll("button.accepted:not(.active):not(.d-none)").forEach((alternative) => {
                 if(alternative !== other_button && alternative.getAttribute("data-id") !== chosen_accepted) {
                     alternative.classList.remove("d-block");
                     alternative.classList.add("d-none");
@@ -102,7 +116,7 @@ function maxdiff({ question_code, size } = {}) {
             question_card.querySelector(`.form-check > input[id='p_${question_code}_2_${button.getAttribute("data-id")}']`).checked = true;
             chosen_rejected = button.getAttribute("data-id");
 
-            document.querySelectorAll("button.rejected:not(.active):not(.d-none)").forEach((alternative) => {
+            question_card.querySelectorAll("button.rejected:not(.active):not(.d-none)").forEach((alternative) => {
                 if(alternative !== other_button && alternative.getAttribute("data-id") !== chosen_rejected) {
                     alternative.classList.remove("d-block");
                     alternative.classList.add("d-none");
@@ -122,7 +136,10 @@ function maxdiff({ question_code, size } = {}) {
         // Create the card image
         let card_img = document.createElement("img");
         card_img.src = item;
-        card_img.classList.add("card-img-top");
+        card_img.style.height = img_height;
+        card_img.style.objectFit = "scale-down";
+        // card_img.classList.add("card-img-top");
+        card_img.classList.add("my-auto");
 
         // Create the card body
         let card_body = document.createElement("div");
@@ -156,8 +173,8 @@ function maxdiff({ question_code, size } = {}) {
 
         // Insert into the card, the card image and card body sections
         card.append(...[card_img, card_body]);
-        card.style.minWidth = size;
-        card.style.maxWidth = size;
+        card.style.minWidth = card_size;
+        card.style.maxWidth = card_size;
         card.classList.add("mt-5");
 
         return card;
@@ -172,7 +189,22 @@ function maxdiff({ question_code, size } = {}) {
 
     // Insert the card deck into the question card
     question_card.append(card_deck);
+
+    /* Question Logic */
+    let next_btn = document.querySelector("#p_next");
+    let lang = navigator.language.substring(0, 2);
+    
+    next_btn.addEventListener("click", (e) => {
+        if(chosen_accepted === null){
+            alert(`Please, select an option for ${labels[0]}`);
+            e.preventDefault();
+        } else if(chosen_rejected === null) {
+            alert(`Please, select an option for ${labels[1]}`);
+            e.preventDefault();
+        }
+    });
 }
 
 // Change the question code to yours
-maxdiff({ question_code: "Q1", size : "250px" });
+maxdiff({ question_code: "Q1", itemset : "ITEMSET1", card_size : "350px", img_height : "350px"});
+maxdiff({ question_code: "Q2", itemset : "ITEMSET2", card_size : "350px", img_height : "350px"});
