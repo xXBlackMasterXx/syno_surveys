@@ -1,4 +1,4 @@
-function multiple_open_text({ question_code, array_filter, addons, numerical_validation, fill_empty_with, allow_empty_fields } = {}) {
+function multiple_open_text({ question_code, array_filter, addons, numerical_validation, top_of_mind, fill_empty_with, allow_empty_fields } = {}) {
   const lang = document.querySelector('html').getAttribute('lang').substring(0, 2);
   const question_card = document.querySelector(`#q_${question_code}_card`);
   if (question_card === null) {
@@ -50,7 +50,8 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
     "es": "Restante",
     "nb": "Gjenstående",
     "sv": "Kvarvarande",
-    "da": "Tilbageværende"
+    "da": "Tilbageværende",
+    "fi": "Jäljellä"
   }
 
   const completed_translations = {
@@ -61,7 +62,8 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
     "es": "Completado",
     "nb": "Fullført",
     "sv": "Färdigställd",
-    "da": "Færdiggjort"
+    "da": "Færdiggjort",
+    "fi": "Valmis"
   };
 
   const remaining_message = remaining_translations[lang] ? remaining_translations[lang]: remaining_translations["en"];
@@ -183,7 +185,7 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
     delete_error_message({ key: key, target: target });
     target.insertAdjacentHTML(
       where,
-      `<span class="d-block custom-error pb-1 text-center" id="feedback_${key}"><span class="form-error-message text-danger">${message}</span></span>`
+      `<span class="d-block custom-error pb-1 text-center" id="feedback_${question_code}_${key}"><span class="form-error-message text-danger">${message}</span></span>`
     );
     if(target.querySelector("input") !== null){
       target.querySelector("input").classList.add("is-invalid", "text-danger");
@@ -192,7 +194,7 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
   }
 
   function delete_error_message({ key, target }) {
-    const feedback = document.querySelector(`#feedback_${key}`);
+    const feedback = document.querySelector(`#feedback_${question_code}_${key}`);
     if (feedback != null) {
       feedback.remove();
       if(target.querySelector("input") !== null){
@@ -257,7 +259,8 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
             "es" : `El número no puede ser menor que ${min_value}`,
             "nb" : `Tallet kan ikke være mindre enn ${min_value}`,
             "sv" : `Numret kan inte vara mindre än ${min_value}`,
-            "da" : `Tallet kan ikke være mindre end ${min_value}`
+            "da" : `Tallet kan ikke være mindre end ${min_value}`,
+            "fi" : `Luvun ei saa olla pienempi kuin ${min_value}`
           };
 
           const message = translations[lang] ? translations[lang]: translations["en"];
@@ -274,7 +277,8 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
             "es" : `El número no puede ser mayor que ${max_value}`,
             "nb" : `Tallet kan ikke være større enn ${max_value}`,
             "sv" : `Numret kan inte vara större än ${max_value}`,
-            "da" : `Tallet kan ikke være større end ${max_value}`
+            "da" : `Tallet kan ikke være større end ${max_value}`,
+            "fi" : `Luvun ei saa olla suurempi kuin ${max_value}`
           };
 
           const message = translations[lang] ? translations[lang]: translations["en"];
@@ -291,7 +295,8 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
             "es" : `Este campo debe tener al menos ${min_length} caracteres/dígitos`,
             "nb" : `Dette feltet må ha minst ${min_length} tegn/siffer`,
             "sv" : `Det här fältet måste ha minst ${min_length} tecken/siffror`,
-            "da" : `Dette felt skal have mindst ${min_length} tegn/cifre`
+            "da" : `Dette felt skal have mindst ${min_length} tegn/cifre`,
+            "fi" : `Tässä kentässä on oltava vähintään ${min_length} merkkiä`
           };
 
           const message = translations[lang] ? translations[lang]: translations["en"];
@@ -309,7 +314,8 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
             "es" : "Este campo no puede estar en blanco",
             "nb" : "Dette feltet kan ikke være tomt",
             "sv" : "Det här fältet kan inte vara tomt",
-            "da" : "Dette felt kan ikke være tomt"
+            "da" : "Dette felt kan ikke være tomt",
+            "fi": "Tämä kenttä ei saa olla tyhjä"
           };
 
           const message = translations[lang] ? translations[lang]: translations["en"];
@@ -337,13 +343,40 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
           "es" : `La suma total debe ser igual a ${required_sum}`,
           "nb" : `Total sum må være lik ${required_sum}`,
           "sv" : `Den totala summan måste vara lika med ${required_sum}`,
-          "da" : `Den samlede sum skal være lig med ${required_sum}`
+          "da" : `Den samlede sum skal være lig med ${required_sum}`,
+          "fi" : `Kokonaissumman on oltava yhtä suuri kuin ${required_sum}`
         }
 
         const message = translations[lang] ? translations[lang]: translations["en"];
 
         const question_title = question_card.querySelector("h5");
         handle_error_message({ key: 0, target: question_title, message: message, where : "afterend"});
+      }
+    }
+
+    if(top_of_mind !== undefined) {
+      let first_textfield = Object.keys(answer_options)[0];
+      console.log(first_textfield);
+      if(top_of_mind == true && answer_options[first_textfield].input.value === ""){
+        console.log(answer_options[first_textfield].input.value);
+        e.preventDefault();
+
+        const translations = {
+          "en": "Please, fill out the first textfield",
+          "fr": "Veuillez remplir le premier champ de texte",
+          "de": "Bitte füllen Sie das erste Textfeld aus",
+          "it": "Per favore, compila il primo campo di testo",
+          "es": "Por favor, complete el primer campo de texto",
+          "nb": "Vennligst fyll ut det første tekstfeltet",
+          "sv": "Var god fyll i det första textfältet",
+          "da": "Venligst udfyld det første tekstfelt",
+          "fi": "Täytä ensimmäinen tekstikenttä, kiitos"
+        }
+
+        const message = translations[lang] ? translations[lang]: translations["en"];
+        handle_error_message({ key: first_textfield, target: answer_options[first_textfield].input_container, message: message });
+      } else {
+        delete_error_message({ key: first_textfield, target: answer_options[first_textfield].input_container });
       }
     }
   });
@@ -366,6 +399,7 @@ multiple_open_text({
     max_length: 3,
     required_sum: 100
   },
+  top_of_mind : true,
   fill_empty_with: 0,
   allow_empty_fields: true
 });
