@@ -310,7 +310,7 @@ function multiple_choice_matrix({ question_code, randomize, array_filter, exclus
 
                     let translations = {
                         "en": "Please select an answer for each row",
-                        "fr": "Veuillez sélectionner une réponse pour chaque ligne",
+                        "fr": "Veuillez sélectionner au moins une réponse pour chaque ligne",
                         "de": "Bitte wählen Sie eine Antwort für jede Zeile aus",
                         "it": "Seleziona una risposta per ogni riga",
                         "es": "Por favor, selecciona una respuesta para cada fila",
