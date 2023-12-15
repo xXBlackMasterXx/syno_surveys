@@ -3,7 +3,7 @@ function select_random_elements({question_code, n}) {
     const question_card = document.querySelector(`#q_${question_code}_card`);
     // If answer code doesn't exists
     if (question_card === undefined){ 
-        alert(`Question card with code "${question_code}" not found.`);
+        console.warn(`Question card with code "${question_code}" not found.`);
         return;
     }
     // Select the options container
@@ -12,7 +12,7 @@ function select_random_elements({question_code, n}) {
     const form_checks = question_card.querySelectorAll(".form-check");
     // If question doesn't have answer options
     if (form_checks === undefined) {
-        alert(`No answer options found for question with code "${question_code}".`);
+        console.warn(`No answer options found for question with code "${question_code}".`);
         return;
     }
     // Create an object to store the answer options
@@ -55,5 +55,5 @@ function select_random_elements({question_code, n}) {
     return result;
 }
   
-console.log(select_random_elements({question_code : "F18xFILTER", n : 15}));
+console.log(select_random_elements({question_code : "Q1xFILTER", n : 15}));
   

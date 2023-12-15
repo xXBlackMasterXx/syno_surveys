@@ -39,10 +39,10 @@ function recode({ question_code, filter, dictionary, test_mode} = {}) {
 }
 
 recode({
-    question_code: "Q12xRECODE",
-    filter: "Q12",
+    question_code: "Q2xRECODE",
+    filter: "Q1",
     dictionary: {
-        /* answer codes selected in filter : [list of answer codes in this question to be selected]*/
+        /* answer codes selected in Q1 : [list of answer codes in Q2xRECODE to be selected]*/
         1: [1, 2, 3, 4, 6, 7, 8, 9, 11],
         2: [1, 2, 3, 4, 6, 7, 8, 9, 11],
         3: [1, 2, 3, 4, 10, 17],

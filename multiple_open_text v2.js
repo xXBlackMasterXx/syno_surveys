@@ -321,10 +321,10 @@ function multiple_open_text({ question_code, addons, numerical_validation, fill_
 }
 
 multiple_open_text({
-  question_code: "Q4",
+  question_code: "Q1",
   addons: {
     text: "%",
-    type: "suffix"
+    type: "suffix" // "preffix"
   },
   numerical_validation: {
     min_value: 1,

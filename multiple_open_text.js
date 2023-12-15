@@ -97,7 +97,7 @@ function multiple_open_text({ question_codes, numerical_validation, text_validat
       `<span class="d-block custom-error pb-1 text-center" id="feedback_${key}"><span class="form-error-message text-danger">${message}</span></span>`
     );
 
-    console.log("Scrolling to" + key);
+    // console.log("Scrolling to" + key);
     feedback.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
   }
 
@@ -140,13 +140,13 @@ function multiple_open_text({ question_codes, numerical_validation, text_validat
         // Set up the total sum if is required
         if (numerical_validation["required_sum"] !== undefined) {
           console.clear();
-          console.log(`${key} : ${e.target.value}`);
+          // console.log(`${key} : ${e.target.value}`);
           sum = 0;
           Object.values(open_texts).forEach((open_text) => {
             sum += Number(open_text.value);
           });
 
-          console.log("sum", sum);
+          // console.log("sum", sum);
           updateProgress(sum, 0, 100);
         }
       }
@@ -168,7 +168,7 @@ function multiple_open_text({ question_codes, numerical_validation, text_validat
           sum += Number(open_text.value);
         });
 
-        console.log("sum", sum);
+        // console.log("sum", sum);
         updateProgress(sum, 0, 100);
       }
     }

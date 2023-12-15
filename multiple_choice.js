@@ -69,7 +69,7 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
             })
 
             new_positions.forEach((new_position) => {
-                console.log("form_check to be removed", options[new_position]["form_check"]);
+                // console.log("form_check to be removed", options[new_position]["form_check"]);
                 options[new_position]["form_check"].remove();
                 options_container.appendChild(options[new_position]["form_check"]);
             });
@@ -172,9 +172,9 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
 
     /* CHECKBOX VALIDATIONS */
     if (validation !== undefined) {
-        console.log("Using validation");
-        console.log("n_required, min_limit, max_limit");
-        console.log(validation.n_required, validation.min_limit, validation.max_limit);
+        // console.log("Using validation");
+        // console.log("n_required, min_limit, max_limit");
+        // console.log(validation.n_required, validation.min_limit, validation.max_limit);
         var feedback;
         var n_checked;
 
@@ -223,7 +223,8 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
                         "es": "Por favor, selecciona al menos {n} opción(es)",
                         "no": "Vennligst velg minst {n} alternativ(er)",
                         "sv": "Vänligen välj minst {n} alternativ",
-                        "da": "Vælg venligst mindst {n} mulighed(er)"
+                        "da": "Vælg venligst mindst {n} mulighed(er)",
+                        "fi": "Valitse vähintään {n} vaihtoehto(a)"
                     };
 
                     let lang = navigator.language.substring(0, 2);
@@ -255,7 +256,8 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
                         "es": "Por favor, selecciona {n} opción(es)",
                         "no": "Vennligst velg {n} alternativ(er)",
                         "sv": "Vänligen välj {n} alternativ",
-                        "da": "Vælg venligst {n} mulighed(er)"
+                        "da": "Vælg venligst {n} mulighed(er)",
+                        "fi": "Valitse {n} vaihtoehto(a)"
                     };
 
                     let lang = navigator.language.substring(0, 2);
@@ -299,13 +301,13 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
 
 multiple_choice({
     /* Question code of the multiple choice to set up */
-    question_code: "Q1",
+    question_code: "Q2",
     /* Open text question code to dump the schema */
-    schema: "Q1xSCHEMA",
+    schema: "Q2xSCHEMA",
     /* If randomization is required */
     randomize: {
         /* Question code of the filter schema */
-        filter_schema: "Q0xSCHEMA",
+        filter_schema: "Q1xSCHEMA",
         /* OR */
         /* Define list of answer codes */
         answer_groups: [[1, 2]],
@@ -316,9 +318,9 @@ multiple_choice({
     /* If array filter is required */
     array_filter: {
         /* Question code of the filter */
-        filter: "Q0",
+        filter: "Q1",
         /* Question code of filter's schema */
-        filter_schema: "Q0xSCHEMA",
+        filter_schema: "Q1xSCHEMA",
         /* If inclusive, keeps the selected options in filter, if exclusive, will exclude selected in filter
         Answer options that didn't appeared in filter_schema are ignored for array filter process */
         type: "inclusive"

@@ -42,7 +42,7 @@ function single_choice({question_code, schema, randomize, array_filter, hide_ans
             })
 
             new_positions.forEach((new_position) => {
-                console.log("form_check to be removed", options[new_position]["form_check"]);
+                // console.log("form_check to be removed", options[new_position]["form_check"]);
                 options[new_position]["form_check"].remove();
                 options_container.appendChild(options[new_position]["form_check"]);
             });
@@ -146,28 +146,28 @@ function single_choice({question_code, schema, randomize, array_filter, hide_ans
 
 single_choice({
     /* Question code to apply these settings */
-    question_code: "Q1",
+    question_code: "Q2",
     /* Open text question code to dump the schema */
-    schema: "Q1xSCHEMA",
+    schema: "Q2xSCHEMA",
     /* Use if randomization is required */
     randomize: {
         /* Randomized based on previous question */
-        filter_schema: "Q0xSCHEMA",
+        filter_schema: "Q1xSCHEMA",
         /* OR */
         /* Set answer codes by groups */
         answer_groups: [ [1, 2] ],
         /* If true, randomize between groups, if false, just randomize inside groups */
-        randomize_groups: true
+        randomize_groups: false
     },
     /* Use if array filter is required */
     array_filter: {
         /* Question code of the filter radio/checkboxes */
-        filter: "Q0",
+        filter: "Q1xFILTER",
         /* Open text schema of the filter */
-        filter_schema: "Q0xSCHEMA",
+        filter_schema: "Q01xSCHEMA",
         /* If inclusive, will keep the selected option in filter, if exclusive, answers will be excluded. 
         Not listed answer codes in schema will be ignored for the array filter process */
-        type: "inclusive"
+        type: "inclusive" // "exclusive"
     },
     /* Answer codes to hide */
     hide_answers: [1, 2]

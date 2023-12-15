@@ -15,5 +15,5 @@ add_insertans({
     // Single choice to use its selected option
     filter : "Q1", 
     // In the current page, the CSS selector (id or class) to be replaced
-    selector : "#insertan"
+    selector : "#other"
 });

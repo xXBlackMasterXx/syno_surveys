@@ -203,7 +203,7 @@ function ranking({ question_code, array_filter, validation } = {}) {
             }
         } else {
             if(ranked_options != question_card.querySelectorAll(".list-group-item").length ){
-                console.log(ranked_options, question_card.querySelectorAll(".list-group-item").length);
+                // console.log(ranked_options, question_card.querySelectorAll(".list-group-item").length);
                 alert(`Please, rank the remaining options`);
                 e.preventDefault();
             }
@@ -216,12 +216,12 @@ ranking({
     /* If array filter is required */
     array_filter: {
         /* Question code of the filter */
-        filter: "Q1",
+        filter: "Q1xFILTER",
         /* Question code of filter's schema */
         filter_schema: "Q1xSCHEMA",
         /* If inclusive, keeps the selected options in filter, if exclusive, will exclude selected in filter
         Answer options that didn't appeared in filter_schema are ignored for array filter process */
-        type: "inclusive"
+        type: "inclusive" // "exclusive"
     },
     validation : {
         n_required : 2

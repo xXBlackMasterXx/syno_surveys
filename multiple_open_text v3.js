@@ -2,7 +2,7 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
   const lang = document.querySelector('html').getAttribute('lang').substring(0, 2);
   const question_card = document.querySelector(`#q_${question_code}_card`);
   if (question_card === null) {
-    alert(`Question ${question_code} does not exists`);
+    console.warn(`Question ${question_code} does not exists`);
     return;
   }
 
@@ -356,9 +356,9 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
 
     if(top_of_mind !== undefined) {
       let first_textfield = Object.keys(answer_options)[0];
-      console.log(first_textfield);
+      // console.log(first_textfield);
       if(top_of_mind == true && answer_options[first_textfield].input.value === ""){
-        console.log(answer_options[first_textfield].input.value);
+        // console.log(answer_options[first_textfield].input.value);
         e.preventDefault();
 
         const translations = {
@@ -383,15 +383,15 @@ function multiple_open_text({ question_code, array_filter, addons, numerical_val
 }
 
 multiple_open_text({
-  question_code: "Q6",
+  question_code: "Q2",
   array_filter : {
-    filter : "Q3B_FILTER",
-    filter_schema : "Q3B_FILTER_SCHEMA",
+    filter : "Q1xFILTER",
+    filter_schema : "Q1xSCHEMA",
     type : "inclusive"
   },
   addons: {
     text: "%",
-    type: "suffix"
+    type: "suffix" // "preffix"
   },
   numerical_validation: {
     min_value: 1,

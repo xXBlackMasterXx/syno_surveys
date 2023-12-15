@@ -198,7 +198,7 @@ function multiple_choice_matrix({ question_code, randomize, array_filter, exclus
                         row_ids.forEach((row_id) => {
                             if (row_id != 0) {
                                 // If button is checked
-                                console.log("cell: ", answer_options[row_id][col_id]);
+                                // console.log("cell: ", answer_options[row_id][col_id]);
                                 if (answer_options[row_id][col_id].input.checked == true) {
                                     exclude_siblings = true;
                                     exclusive_checked = row_id;
@@ -251,7 +251,7 @@ function multiple_choice_matrix({ question_code, randomize, array_filter, exclus
     /* SET MIN,MAX & REQ CHECKS PER ROW */
     var row_checks = [];
     if (validation !== undefined) {
-        console.log("n_required", validation.n_required, "min_limit", validation.min_limit, "max_limit", validation.max_limit);
+        // console.log("n_required", validation.n_required, "min_limit", validation.min_limit, "max_limit", validation.max_limit);
 
         function count_checked() {
             row_checks = [];
@@ -266,7 +266,7 @@ function multiple_choice_matrix({ question_code, randomize, array_filter, exclus
                         }
                     }
 
-                    console.log(`row ${row} has n_checked: ${n_checked}`);
+                    // console.log(`row ${row} has n_checked: ${n_checked}`);
 
                     if ((validation["max_limit"] !== undefined && n_checked >= validation["max_limit"]) || (validation["n_required"] !== undefined && n_checked >= validation["n_required"])) {
                         for (let [col, value2] of Object.entries(value)) {
@@ -316,7 +316,8 @@ function multiple_choice_matrix({ question_code, randomize, array_filter, exclus
                         "es": "Por favor, selecciona una respuesta para cada fila",
                         "no": "Vennligst velg et svar for hver rad",
                         "sv": "Vänligen välj ett svar för varje rad",
-                        "da": "Vælg venligst et svar for hver række"
+                        "da": "Vælg venligst et svar for hver række",
+                        "fi": "Valitse vastaus jokaiselle riville"
                     };
 
                     // Detect the language
@@ -343,7 +344,7 @@ function multiple_choice_matrix({ question_code, randomize, array_filter, exclus
             // But min_limit is defined
             if (validation["min_limit"] !== undefined) {
                 // validate that each row has min_limit checked options
-                console.log("row checks min limit: ", row_checks);
+                // console.log("row checks min limit: ", row_checks);
                 row_checks.forEach((n_checked) => {
                     if (n_checked < validation["min_limit"]) {
                         e.preventDefault();
@@ -360,7 +361,8 @@ function multiple_choice_matrix({ question_code, randomize, array_filter, exclus
                             "es": "Por favor, selecciona al menos {n} opción(es) por fila",
                             "no": "Vennligst velg minst {n} alternativ(er) per rad",
                             "sv": "Vänligen välj minst {n} alternativ per rad",
-                            "da": "Vælg venligst mindst {n} valgmulighed(er) pr. række"
+                            "da": "Vælg venligst mindst {n} valgmulighed(er) pr. række",
+                            "fi": "Valitse vähintään {n} vaihtoehto(a) joka riville"
                         };
 
                         let lang = navigator.language.substring(0, 2);
@@ -382,7 +384,7 @@ function multiple_choice_matrix({ question_code, randomize, array_filter, exclus
             }
 
         } else { // If n_required is defined
-            console.log("row checks required", row_checks);
+            // console.log("row checks required", row_checks);
             // Check that each row has n_required checks per row
             row_checks.forEach((n_checked) => {
                 if (n_checked < validation["n_required"]) {
@@ -400,7 +402,8 @@ function multiple_choice_matrix({ question_code, randomize, array_filter, exclus
                         "es": "Por favor, selecciona {n} opción(es) por fila",
                         "no": "Vennligst velg {n} alternativ(er) per rad",
                         "sv": "Vänligen välj {n} alternativ per rad",
-                        "da": "Vælg venligst {n} mulighed(er) pr. række"
+                        "da": "Vælg venligst {n} mulighed(er) pr. række",
+                        "fi": "Valitse {n} vaihtoehto(a) joka riville"
                     };
 
                     let lang = navigator.language.substring(0, 2);
@@ -425,28 +428,28 @@ function multiple_choice_matrix({ question_code, randomize, array_filter, exclus
 
 multiple_choice_matrix({
     /* Question code of the multi choice matrix */
-    question_code: "Q3",
+    question_code: "Q2",
     /* If randomization is required */
     randomize: {
         /* If randomization is required for rows */
         rows: {
             /* filter schema */
-            filter_schema: "Q0xSCHEMA",
+            filter_schema: "Q1xSCHEMA",
             /* OR */
             /* Answer codes groups, not lister answer codes will remain anchored */
             answer_groups: [[1, 2]],
             /* If true, randomize between groups, if not, only randomize elements inside each group  */
-            randomize_groups: true
+            randomize_groups: false
         },
         /* If randomization is required for columns */
         columns: {
             /* filter schema */
-            filter_schema: "Q0xSCHEMA",
+            filter_schema: "Q1xSCHEMA",
             /* OR */
             /* Answer codes groups, not lister answer codes will remain anchored */
             answer_groups: [[1, 2]],
             /* If true, randomize between groups, if not, only randomize elements inside each group  */
-            randomize_groups: true
+            randomize_groups: false
         }
     },
     /* If array filter is required */
@@ -454,19 +457,19 @@ multiple_choice_matrix({
         /* If array filter for rows is required */
         rows: {
             /* Define the filter question code to use as array filter */
-            filter: "Q0",
+            filter: "Q1",
             /* Filter schema */
-            filter_schema: "Q0xSCHEMA",
+            filter_schema: "Q1xSCHEMA",
             /* If inclusive, keep rows that were selected in filter, if exclusive, delete rows selected in filter
             Not listed answer codes in schema will be remain visible */
-            type: "exclusive"
+            type: "inclusive"
         },
         /* If array filter for columns is required */
         columns: {
             /* Define the filter question code to use as array filter */
-            filter: "Q0",
+            filter: "Q1",
             /* Filter schema */
-            filter_schema: "Q0xSCHEMA",
+            filter_schema: "Q1xSCHEMA",
             /* If inclusive, keep rows that were selected in filter, if exclusive, delete rows selected in filter
             Not listed answer codes in schema will be remain visible */
             type: "inclusive"

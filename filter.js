@@ -31,11 +31,11 @@ function filter({question_code, filter_question, test_mode} = {}) {
 
 filter({
     /* Question code of the current multiple choice filter */
-    question_code : "", 
+    question_code : "Q1", 
     /* Configurations depending on the filter question type */
     filter_question :  {
         "multiple_open_text" : {
-            filters : ["B7_1","B7_2","B7_3","B7_4","B7_99"]
+            filters : ["Q2_1","Q2_2","Q2_3","Q2_4","Q2_99"]
         }
     }
 });

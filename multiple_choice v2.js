@@ -35,7 +35,7 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
     // Check if schema is defined
     /* DUMP SCHEMA */
     if (schema !== undefined) {
-        console.log("Dump order outside randomization");
+        // console.log("Dump order outside randomization");
         // Find the element with the ID matching the schema and add "_1"
         // Use the CSS selector to select the schema open text
         const dump_at = document.querySelector(`#p_${schema}_1`);
@@ -163,7 +163,7 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
 
             // Determine the new positions of the answer options after randomization
             Object.keys(answer_options).forEach((answer_code, index) => {
-                console.log(randomized_elements, answer_code);
+                // console.log(randomized_elements, answer_code);
                 if (randomized_elements.includes(Number(answer_code))) { // check if answer_code is included
                     new_positions.push(randomized_elements[j]);
                     j++;
@@ -174,7 +174,7 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
 
             // Save the new order of answer options to the schema, if applicable
             if (schema !== undefined) {
-                console.log("Dump order inside randomization");
+                // console.log("Dump order inside randomization");
                 const dump_at = document.querySelector(`#p_${schema}_1`);
                 if (dump_at === undefined) {
                     alert(`There is no such ${schema} open text to save the schema`);
@@ -302,7 +302,8 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
                         "es": "Por favor, selecciona al menos {n} opción(es)",
                         "no": "Vennligst velg minst {n} alternativ(er)",
                         "sv": "Vänligen välj minst {n} alternativ",
-                        "da": "Vælg venligst mindst {n} mulighed(er)"
+                        "da": "Vælg venligst mindst {n} mulighed(er)",
+                        "fi": "Valitse vähintään {n} vaihtoehto(a)"
                     }
 
                     const message = translations[lang] ? translations[lang].replace("{n}", validation["min_limit"]) : translations["en"].replace("{n}", validation["min_limit"]);
@@ -332,7 +333,8 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
                         "es": "Por favor, selecciona {n} opción(es)",
                         "no": "Vennligst velg {n} alternativ(er)",
                         "sv": "Vänligen välj {n} alternativ",
-                        "da": "Vælg venligst {n} mulighed(er)"
+                        "da": "Vælg venligst {n} mulighed(er)",
+                        "fi": "Valitse {n} vaihtoehto(a)"
                     };
 
                     const message = translations[lang] ? translations[lang].replace("{n}", validation["n_required"]) : translations["en"].replace("{n}", validation["n_required"]);
@@ -417,13 +419,13 @@ function multiple_choice({ question_code, schema, randomize, array_filter, hide_
 
 multiple_choice({
     /* Question code of the multiple choice to set up */
-    question_code: "Q1",
+    question_code: "Q2",
     /* Open text question code to dump the schema */
-    schema: "Q1xSCHEMA",
+    schema: "Q2xSCHEMA",
     /* If randomization is required */
     randomize: {
         /* Question code of the filter schema */
-        filter_schema: "Q0xSCHEMA",
+        filter_schema: "Q1xSCHEMA",
         /* OR */
         /* Define list of answer codes */
         answer_groups: [[1, 2]],
@@ -434,9 +436,9 @@ multiple_choice({
     /* If array filter is required */
     array_filter: {
         /* Question code of the filter */
-        filter: "Q0",
+        filter: "Q1",
         /* Question code of filter's schema */
-        filter_schema: "Q0xSCHEMA",
+        filter_schema: "Q1xSCHEMA",
         /* If inclusive, keeps the selected answer_options in filter, if exclusive, will exclude selected in filter
         Answer answer_options that didn't appeared in filter_schema are ignored for array filter process */
         type: "inclusive"

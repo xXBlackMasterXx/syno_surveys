@@ -124,7 +124,7 @@ function maxdiff({ question_code, itemset, card_size, img_height } = {}) {
             });
         }
 
-        console.log(`chosen accepted: ${chosen_accepted}\tchosen rejected: ${chosen_rejected}`);
+        // console.log(`chosen accepted: ${chosen_accepted}\tchosen rejected: ${chosen_rejected}`);
     }
 
     // Create a card for each found item

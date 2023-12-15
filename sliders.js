@@ -74,7 +74,7 @@ function sliders({question_code, validation}) {
         });
 
         window.addEventListener('load', (e) => {
-            console.log("window loaded!");
+            // console.log("window loaded!");
             value.input.value = value.input.value;
             slider.value = value.input.value;
             slider_badge.innerText = value.input.value;

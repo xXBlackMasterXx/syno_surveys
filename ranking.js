@@ -127,16 +127,16 @@ function ranking({ question_code, top_label, bottom_label, validation } = {}) {
         });
 
         // Print the rank order found
-        console.log(rank_order);
+        // console.log(rank_order);
 
         // A variable to store the number of options that were ranked 
         let ranked_options = 0;
         // For each item into the rank_order list of identifiers
         rank_order.forEach((rank_id, rank) => {
             // Print the ranked element and its id
-            console.log(`rank_id: ${rank_id}, rank : ${rank}`);
+            // console.log(`rank_id: ${rank_id}, rank : ${rank}`);
             // Print the linked input that reference to the current rank element
-            console.log(answer_options[rank_id]);
+            // console.log(answer_options[rank_id]);
             // Store the ranking into its linked input
             answer_options[rank_id].input.value = `Rank ${rank + 1}`;
             // Increment the number of ranked options +1
@@ -144,12 +144,12 @@ function ranking({ question_code, top_label, bottom_label, validation } = {}) {
         });
 
         //  Print total number of ranked options
-        console.log(`Ranked options: ${ranked_options}`);
+        // console.log(`Ranked options: ${ranked_options}`);
     });
 }
 
 ranking({
-    question_code: "Q9",
+    question_code: "Q1",
     top_label: "Most important",
     bottom_label: "Less important",
     validation : {

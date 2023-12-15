@@ -193,7 +193,7 @@ function single_choice_matrix({ question_code, randomize, array_filter, exclusiv
                         row_ids.forEach((row_id) => {
                             if (row_id != 0) {
                                 // If button is checked
-                                console.log("cell: ", answer_options[row_id][col_id]);
+                                // console.log("cell: ", answer_options[row_id][col_id]);
                                 if (answer_options[row_id][col_id].input.checked == true) {
                                     exclude_siblings = true;
                                     exclusive_checked = row_id;
@@ -266,7 +266,8 @@ function single_choice_matrix({ question_code, randomize, array_filter, exclusiv
                         "es": "Por favor, selecciona una respuesta para cada fila",
                         "nb": "Vennligst velg et svar for hver rad",
                         "sv": "Vänligen välj ett svar för varje rad",
-                        "da": "Vælg venligst et svar for hver række"
+                        "da": "Vælg venligst et svar for hver række",
+                        "fi": "Valitse vastaus jokaiselle riville"
                     };
 
                     // Detect the language
@@ -292,28 +293,28 @@ function single_choice_matrix({ question_code, randomize, array_filter, exclusiv
 
 single_choice_matrix({
     /* Question code of the multi choice matrix */
-    question_code: "Q3",
+    question_code: "Q2",
     /* If randomization is required */
     randomize: {
         /* If randomization is required for rows */
         rows: {
             /* filter schema */
-            filter_schema: "Q0xSCHEMA",
+            filter_schema: "Q1xSCHEMA",
             /* OR */
             /* Answer codes groups, not lister answer codes will remain anchored */
             answer_groups: [[1, 2]],
             /* If true, randomize between groups, if not, only randomize elements inside each group  */
-            randomize_groups: true
+            randomize_groups: false
         },
         /* If randomization is required for columns */
         columns: {
             /* filter schema */
-            filter_schema: "Q0xSCHEMA",
+            filter_schema: "Q1xSCHEMA",
             /* OR */
             /* Answer codes groups, not lister answer codes will remain anchored */
             answer_groups: [[1, 2]],
             /* If true, randomize between groups, if not, only randomize elements inside each group  */
-            randomize_groups: true
+            randomize_groups: false
         }
     },
     /* If array filter is required */
@@ -321,22 +322,22 @@ single_choice_matrix({
         /* If array filter for rows is required */
         rows: {
             /* Define the filter question code to use as array filter */
-            filter: "Q0",
+            filter: "Q1xFILTER",
             /* Filter schema */
-            filter_schema: "Q0xSCHEMA",
+            filter_schema: "Q1xSCHEMA",
             /* If inclusive, keep rows that were selected in filter, if exclusive, delete rows selected in filter
             Not listed answer codes in schema will be remain visible */
-            type: "exclusive"
+            type: "inclusive" // "exclusive"
         },
         /* If array filter for columns is required */
         columns: {
             /* Define the filter question code to use as array filter */
-            filter: "Q0",
+            filter: "Q1xFILTER",
             /* Filter schema */
-            filter_schema: "Q0xSCHEMA",
+            filter_schema: "Q1xSCHEMA",
             /* If inclusive, keep rows that were selected in filter, if exclusive, delete rows selected in filter
             Not listed answer codes in schema will be remain visible */
-            type: "inclusive"
+            type: "inclusive" // "exclusive"
         }
     },
     /* If column codes needs to be set as exclusive */
