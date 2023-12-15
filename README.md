@@ -1,6 +1,6 @@
-# syno_surveys
+# Syno Survey Library
 
-The official repository to maintain the Javascript codes for SynoSurveys
+The repository for the temporal Javascript codes
 
 In order to make use of this library, you have to copy this code into the Javascript editor within a question page.
 Once done, copy and paste the library URLS you want to use and cofigure them
@@ -37,3 +37,53 @@ Promise.all(promises)
         console.error(`Failed to load script: ${error}`);
     });
 ```
+
+Currently, you can import the following libraries:
+
+| Question type | Library URL | 
+| --------------|-------------|
+| *Single choice* | `survey-library.azurewebsites.net/single_choice.js` |
+| Multiple choice* | `survey-library.azurewebsites.net/multiple_choice.js` |
+| *Single choice matrix* | `survey-library.azurewebsites.net/single_choice_matrix.js` |
+| *Multiple choice matrix* | `survey-library.azurewebsites.net/multiple_choice_matrix.js` |
+| *Open texts* | `survey-library.azurewebsites.net/multiple_open_text.js` |
+| *Rank (numeric)* | `survey-library.azurewebsites.net/rank.js` |
+
+
+Only import the necessary libraries for the question types you need to configure.
+
+## Examples of use
+
+### Single choice
+
+
+To randomize the answers inside the question
+
+```javascript
+single_choice({
+    /* Question code to apply these settings */
+    question_code: "Q1",
+    randomize: {
+        answer_groups: [ [1,2,3] ],
+        randomize_groups: false
+    }
+});
+```
+
+To anchor answers inside the question
+
+```javascript
+single_choice({
+    /* Question code to apply these settings */
+    question_code: "Q1",
+    randomize: {
+        answer_groups: [ 
+            [1,2,3],
+            [99], // Anchored since only one
+            [999] // Anchored since only one
+        ],
+        randomize_groups: false
+    }
+});
+```
+
