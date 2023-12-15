@@ -9,59 +9,59 @@ function rank({ question_code, array_filter, validation } = {}) {
     }
 
     // Function to get all answer options as an object with their references
-    function get_answer_options(){
+    function get_answer_options() {
         let answer_options = {};
         const form_rows = question_card.querySelectorAll(".form-row");
         // Give text labels, empty strings indicate is an inputs
-        const form_labels = Array.from(form_rows).map((form_row) =>  (form_row.innerText));
+        const form_labels = Array.from(form_rows).map((form_row) => (form_row.innerText));
         // List of non empty indexes that indicate visible labels
         const label_indexes = form_labels.reduce((acc, cur, idx) => {
             if (cur !== "") {
-            acc.push(idx);
+                acc.push(idx);
             }
             return acc;
         }, []);
-    
+
         form_rows.forEach((form_row, index) => {
-            if(!label_indexes.includes(index)) {
+            if (!label_indexes.includes(index)) {
                 let input = form_row.querySelector("input,textarea");
-                let label = index > 0 && label_indexes.includes(index-1) ? form_rows[index-1] : undefined;
+                let label = index > 0 && label_indexes.includes(index - 1) ? form_rows[index - 1] : undefined;
                 let id = input.id.split("_")[2];
-                
+
                 answer_options[id] = {
-                    "input_container" : form_row,
-                    "input" : input,
-                    "label_container" : label,
-                    "label" : label === undefined ? undefined : label.querySelector(".col-12").innerText
+                    "input_container": form_row,
+                    "input": input,
+                    "label_container": label,
+                    "label": label === undefined ? undefined : label.querySelector(".col-12").innerText
                 };
             }
         });
 
         // Return the object
-        return(answer_options);
+        return (answer_options);
     }
 
     // Save the answer options
     let answer_options = get_answer_options();
 
-    if(array_filter !== undefined){
+    if (array_filter !== undefined) {
         let filtered_options = [];
         let filtered_schema;
 
         response.answers.forEach((answer) => {
-            if(answer.questionCode == array_filter.filter) {
-                filtered_options.push(Number(answer.code));    
+            if (answer.questionCode == array_filter.filter) {
+                filtered_options.push(Number(answer.code));
             }
 
-            if(answer.questionCode == array_filter.filter_schema){
+            if (answer.questionCode == array_filter.filter_schema) {
                 filtered_schema = answer.value.split(",");
             }
         });
 
-        for(let [key, value] of Object.entries(answer_options)) {
-            if( array_filter.type == "inclusive" && !filtered_options.includes(Number(key)) && filtered_schema.includes(String(key)) ){
+        for (let [key, value] of Object.entries(answer_options)) {
+            if (array_filter.type == "inclusive" && !filtered_options.includes(Number(key)) && filtered_schema.includes(String(key))) {
                 delete answer_options[key];
-            } else if( array_filter.type == "exclusive" && filtered_options.includes(Number(key)) && filtered_schema.includes(String(key)) ) {
+            } else if (array_filter.type == "exclusive" && filtered_options.includes(Number(key)) && filtered_schema.includes(String(key))) {
                 delete answer_options[key];
             }
         }
@@ -73,12 +73,12 @@ function rank({ question_code, array_filter, validation } = {}) {
     // For each found answer option, create a new draggable item and place it into the draggable items list
     for (let [key, value] of Object.entries(answer_options)) {
         // If the input value is empty, it means its has not been dropped
-        if(value.input.value == ""){
+        if (value.input.value == "") {
             // Create a new draggable items based using the label and key of the answer option
             const element = `<a href="#" class="list-group-item list-group-item-action rank-item" data-id="${Number(key)}"><span class="badge badge-primary text-uppercase mr-2"></span>${value.label}</a>`;
             // So placed as draggable item
             ranking_items.push(element);
-        // If already has a value, has been dropped
+            // If already has a value, has been dropped
         } else {
             // Create a new draggable items based using the label and key of the answer option
             const element = `<a href="#" class="list-group-item list-group-item-action rank-item" data-id="${Number(key)}"><span class="badge badge-primary text-uppercase mr-2">${value.input.value}</span>${value.label}</a>`;
@@ -101,8 +101,8 @@ function rank({ question_code, array_filter, validation } = {}) {
     `;
 
     // Insert the rank UI into the question card container
-    question_card.innerHTML += rank_html; 
-    
+    question_card.innerHTML += rank_html;
+
     // Get the answer options again because we just changed the HTML of the page, and 
     // consequently, our current references are not the same anymore.
     answer_options = get_answer_options();
@@ -117,14 +117,14 @@ function rank({ question_code, array_filter, validation } = {}) {
     let ranking_elements = document.querySelectorAll(".rank-item");
     let rank_number = 1;
 
-    
+
     let values = Object.values(answer_options);
     values.forEach((value) => {
-        if(value.input.value > rank_number){
-            rank_number = Number(value.input.value)+1;
+        if (value.input.value > rank_number) {
+            rank_number = Number(value.input.value) + 1;
         }
     });
-    
+
 
     // console.log(rank_number);
 
@@ -133,13 +133,13 @@ function rank({ question_code, array_filter, validation } = {}) {
             e.preventDefault();
             let rank_span = rank_element.querySelector("span");
             if (rank_span.innerText === "") {
-                if(validation !== undefined && (validation.max_limit !== undefined || validation.n_required !== undefined)) {
-                    if(rank_number <= validation.max_limit || rank_number <= validation.n_required) {
+                if (validation !== undefined && (validation.max_limit !== undefined || validation.n_required !== undefined)) {
+                    if (rank_number <= validation.max_limit || rank_number <= validation.n_required) {
                         rank_span.innerText = rank_number;
-                        rank_number++;    
+                        rank_number++;
                     }
                 }
-                
+
                 else {
                     rank_span.innerText = rank_number;
                     rank_number++;
@@ -157,8 +157,8 @@ function rank({ question_code, array_filter, validation } = {}) {
                         element_rank_span.innerText = parseInt(element_rank_span.innerText) - 1;
                     }
                 });
-                
-                if(rank_number > 1){
+
+                if (rank_number > 1) {
                     rank_number--;
                 }
             }
@@ -186,23 +186,23 @@ function rank({ question_code, array_filter, validation } = {}) {
             // Store the ranking into its linked input
             answer_options[rank_id[index]].input.value = rank_order;
             // Increment the number of ranked options +1
-            if(rank_order !== ""){
+            if (rank_order !== "") {
                 ranked_options++;
             }
         });
 
-        if(validation !== undefined) {
-            if(validation.n_required !== undefined && validation.n_required != ranked_options){
+        if (validation !== undefined) {
+            if (validation.n_required !== undefined && validation.n_required != ranked_options) {
                 alert(`Please, rank ${validation.n_required} options`);
                 e.preventDefault();
             }
 
-            else if (validation.min_limit !== undefined && ranked_options < validation.min_limit){
+            else if (validation.min_limit !== undefined && ranked_options < validation.min_limit) {
                 alert(`Please, rank at least ${validation.min_limit} options`);
                 e.preventDefault();
             }
         } else {
-            if(ranked_options != question_card.querySelectorAll(".list-group-item").length ){
+            if (ranked_options != question_card.querySelectorAll(".list-group-item").length) {
                 // console.log(ranked_options, question_card.querySelectorAll(".list-group-item").length);
                 alert(`Please, rank the remaining options`);
                 e.preventDefault();
