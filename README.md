@@ -35,7 +35,7 @@ Currently, you can import the following libraries:
 
 | Question type            | Library URL                                                          | Supported features          |
 | :----------------------- | :------------------------------------------------------------------- | :-------------------------- |
-| _Single choice_          | `https://survey-library.azurewebsites.net/single_choice.js`          | :heavy-check-mark: Randomize subset of answers |
+| _Single choice_          | `https://survey-library.azurewebsites.net/single_choice.js`          | - [x] Randomize subset of answers |
 | _Multiple choice_        | `https://survey-library.azurewebsites.net/multiple_choice.js`        | aasd                        |
 | _Single choice matrix_   | `https://survey-library.azurewebsites.net/single_choice_matrix.js`   | aasd                        |
 | _Multiple choice matrix_ | `https://survey-library.azurewebsites.net/multiple_choice_matrix.js` | aasd                        |
