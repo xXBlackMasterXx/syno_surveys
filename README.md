@@ -33,20 +33,23 @@ Promise.all(promises)
 
 Currently, you can import the following libraries:
 
-| Question type            | Library URL                                                          | Supported features          |
-| :----------------------- | :------------------------------------------------------------------- | :-------------------------- |
-| _Single choice_          | `https://survey-library.azurewebsites.net/single_choice.js`          | - [x] Randomize subset of answers |
-| _Multiple choice_        | `https://survey-library.azurewebsites.net/multiple_choice.js`        | aasd                        |
-| _Single choice matrix_   | `https://survey-library.azurewebsites.net/single_choice_matrix.js`   | aasd                        |
-| _Multiple choice matrix_ | `https://survey-library.azurewebsites.net/multiple_choice_matrix.js` | aasd                        |
-| _Open texts_             | `https://survey-library.azurewebsites.net/multiple_open_text.js`     | aasd                        |
-| _Rank (numeric)_         | `https://survey-library.azurewebsites.net/rank.js`                   | aasd                        |
+| Question type            | Library URL                                                          |
+| :----------------------- | :------------------------------------------------------------------- |
+| _Single choice_          | `https://survey-library.azurewebsites.net/single_choice.js`          |
+| _Multiple choice_        | `https://survey-library.azurewebsites.net/multiple_choice.js`        |
+| _Single choice matrix_   | `https://survey-library.azurewebsites.net/single_choice_matrix.js`   |
+| _Multiple choice matrix_ | `https://survey-library.azurewebsites.net/multiple_choice_matrix.js` |
+| _Open texts_             | `https://survey-library.azurewebsites.net/multiple_open_text.js`     |
+| _Rank (numeric)_         | `https://survey-library.azurewebsites.net/rank.js`                   |
 
 Only import the necessary libraries for the question types that you need to configure.
 
 # Examples of use
 
 ## **Example**: Randomize by
+
+> [!NOTE]
+> Useful information that users should know, even when skimming content.
 
 ### For single choice
 
