@@ -44,16 +44,20 @@ Currently, you can import the following libraries:
 
 Only import the necessary libraries for the question types that you need to configure.
 
+# Index
+
+- [Randomize by](README.md#example-randomize-by)
+  - [Single choice](README.md#for-single-choice)
+
+2. [Randomize a subset of answers](README.md#example-randomize-a-subset-of-answers)
+
 # Examples of use
 
 ## **Example**: Randomize by
 
-> [!NOTE]
-> Useful information that users should know, even when skimming content.
-
 ### For single choice
 
-> - Step 1: Copy and paste the template into the Javascript editor.
+> - Step 1: In the first page, copy and paste the template into the Javascript editor.
 > - Step 2. Add the library URL in the `scripts` to the list in quotes.
 > - Step 2: Change the question code in `question_code`.
 > - Step 4: Change the schema in `question_schema`
@@ -81,7 +85,7 @@ Promise.all(promises)
     single_choice({
       /* Question code to apply these settings */
       question_code: "Q1",
-      schema: "Q1xSCHEMA", // Open text in the same page
+      schema: "Q1xSCHEMA" // Open text in the same page
     });
 
     /* Write scripts above this comment */
@@ -93,7 +97,7 @@ Promise.all(promises)
   });
 ```
 
-> - Step 5: Copy and paste the template into the Javascript editor.
+> - Step 5: In the second page, copy and paste the template into the Javascript editor.
 > - Step 6. Add the library URL for single choice in the `scripts` list in quotes.
 > - Step 7: Change the question code in `question_code`.
 > - Step 8: Change the filter schema in `filter_schema` with exactly the same previous question's schema.
@@ -117,13 +121,13 @@ Promise.all(promises)
   .then(() => {
     /* Write scripts below this comment */
 
-    /* PAGE1 */
+    /* PAGE2 */
     single_choice({
       /* Question code to apply these settings */
       question_code: "Q1",
       randomize: {
-        filter_schema: "Q1xSCHEMA",
-      },
+        filter_schema: "Q1xSCHEMA"
+      }
     });
 
     /* Write scripts above this comment */
@@ -165,7 +169,7 @@ Promise.all(promises)
     multiple_choice({
       /* Question code to apply these settings */
       question_code: "Q1",
-      schema: "Q1xSCHEMA", // Open text in the same page
+      schema: "Q1xSCHEMA" // Open text in the same page
     });
 
     /* Write scripts above this comment */
@@ -206,8 +210,8 @@ Promise.all(promises)
       /* Question code to apply these settings */
       question_code: "Q1",
       randomize: {
-        filter_schema: "Q1xSCHEMA",
-      },
+        filter_schema: "Q1xSCHEMA"
+      }
     });
 
     /* Write scripts above this comment */
@@ -222,6 +226,9 @@ Promise.all(promises)
 ## **Example**: Randomize a subset of answers
 
 ### For single choice
+
+> [!IMPORTANT]
+> Every answer code that is not included in the randomization list will be anchored
 
 > - Step 1: Copy and paste the template into the Javascript editor.
 > - Step 2. Add the library URL for single choice in the `scripts` list in quotes.
@@ -254,7 +261,7 @@ Promise.all(promises)
       randomize: {
         answer_groups: [[1, 2, 3]],
         randomize_groups: false
-      },
+      }
     });
 
     /* Write scripts above this comment */
@@ -267,6 +274,9 @@ Promise.all(promises)
 ```
 
 ### For multiple choice
+
+> [!IMPORTANT]
+> Every answer code that is not included in the randomization list will be anchored
 
 > - Step 1: Copy and paste the template into the Javascript editor.
 > - Step 2. Add the library URL for multiple choice in the `scripts` list in quotes.
@@ -299,7 +309,7 @@ Promise.all(promises)
       randomize: {
         answer_groups: [[1, 2, 3]],
         randomize_groups: false
-      },
+      }
     });
 
     /* Write scripts above this comment */
@@ -315,90 +325,507 @@ Promise.all(promises)
 
 ### For single choice
 
+> [!IMPORTANT]
+> Every answer code that is not included in the randomization list will be anchored
+
 ```javascript
-single_choice({
-  /* Question code to apply these settings */
-  question_code: "Q1",
-  randomize: {
-    answer_groups: [
-      [1, 2, 3],
-      [99], // Anchored since only one
-      [999], // Anchored since only one
-    ],
-    randomize_groups: true, // Randomize all the groups of above
-  },
+// Copy and paste library URLS separated by commas
+let scripts = ["https://survey-library.azurewebsites.net/single_choice.js"];
+
+let promises = scripts.map((script) => {
+  return new Promise((resolve, reject) => {
+    document.querySelector("body").style.opacity = "0";
+    let s = document.createElement("script");
+    s.src = script;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
 });
+
+Promise.all(promises)
+  .then(() => {
+    /* Write scripts below this comment */
+
+    single_choice({
+      /* Question code to apply these settings */
+      question_code: "Q1",
+      randomize: {
+        answer_groups: [
+          [1, 2, 3],
+          [99], // Anchored since only one
+          [999], // Anchored since only one
+        ],
+        randomize_groups: true // Randomize all the groups of above
+      }
+    });
+
+    /* Write scripts above this comment */
+    document.querySelector("body").style.opacity = "1";
+  })
+  /* If a library could not be imported throw an error */
+  .catch((error) => {
+    console.error(`Failed to load script: ${error}`);
+  });
 ```
 
 ### For multiple choice
 
+> [!IMPORTANT]
+> Every answer code that is not included in the randomization list will be anchored
+
 ```javascript
-multiple_choice({
-  /* Question code to apply these settings */
-  question_code: "Q1",
-  randomize: {
-    answer_groups: [
-      [1, 2, 3],
-      [99], // Anchored since only one
-      [999], // Anchored since only one
-    ],
-    randomize_groups: true, // Randomize all the groups of above
-  },
+// Copy and paste library URLS separated by commas
+let scripts = ["https://survey-library.azurewebsites.net/multiple_choice.js"];
+
+let promises = scripts.map((script) => {
+  return new Promise((resolve, reject) => {
+    document.querySelector("body").style.opacity = "0";
+    let s = document.createElement("script");
+    s.src = script;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
 });
+
+Promise.all(promises)
+  .then(() => {
+    /* Write scripts below this comment */
+
+    multiple_choice({
+      /* Question code to apply these settings */
+      question_code: "Q1",
+      randomize: {
+        answer_groups: [
+          [1, 2, 3],
+          [99], // Anchored since only one
+          [999], // Anchored since only one
+        ],
+        randomize_groups: true, // Randomize all the groups of above
+      }
+    });
+
+    /* Write scripts above this comment */
+    document.querySelector("body").style.opacity = "1";
+  })
+  /* If a library could not be imported throw an error */
+  .catch((error) => {
+    console.error(`Failed to load script: ${error}`);
+  });
 ```
 
 ## **Example**: Array filter (inclusive)
 
 ### For single choice
 
-Step 1. Dump the schema of the filter question
+> [!IMPORTANT]
+> Dump the schema means to save the answer codes and their order in an open text question.
+> Only use in case you need to make an array filter using this question.
+
+> - Step 1: Copy and paste the template into the Javascript editor.
+> - Step 2. Add the library URL for single choice in the `scripts` list in quotes.
+> - Step 3: Change the question code in `question_code`.
+> - Step 4: Change the question used as a filter in `filter`
+> - Step 5: Change the `filter_schema` with the schema of the filter question.
+> - Step 6: Set the `type` to `inclusive`
 
 ```javascript
-single_choice({
-  /* Question code to apply these settings */
-  question_code: "Q2",
-  array_filter: {
-    filter: "Q1",
-    filter_schema: "Q1xSCHEMA",
-  },
-});
-```
+// Copy and paste library URLS separated by commas
+let scripts = ["https://survey-library.azurewebsites.net/single_choice.js"];
 
-Step 2.
-
-```javascript
-single_choice({
-  /* Question code to apply these settings */
-  question_code: "Q2",
-  array_filter: {
-    filter: "Q1",
-    filter_schema: "Q1xSCHEMA",
-  },
+let promises = scripts.map((script) => {
+  return new Promise((resolve, reject) => {
+    document.querySelector("body").style.opacity = "0";
+    let s = document.createElement("script");
+    s.src = script;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
 });
+
+Promise.all(promises)
+  .then(() => {
+    /* Write scripts below this comment */
+
+    single_choice({
+      /* Question code to apply these settings */
+      question_code: "Q2",
+      array_filter: {
+        filter: "Q1",
+        filter_schema: "Q1xSCHEMA",
+        type: "inclusive" // includes all checked answers in the filter
+      }
+    });
+
+    /* Write scripts above this comment */
+    document.querySelector("body").style.opacity = "1";
+  })
+  /* If a library could not be imported throw an error */
+  .catch((error) => {
+    console.error(`Failed to load script: ${error}`);
+  });
 ```
 
 ### For multiple choice
 
+> [!IMPORTANT]
+> Dump the schema means to save the answer codes and their order in an open text question.
+> Only use in case you need to make an array filter using this question.
+
+> - Step 1: Copy and paste the template into the Javascript editor.
+> - Step 2. Add the library URL for multiple choice in the `scripts` list in quotes.
+> - Step 3: Change the question code in `question_code`.
+> - Step 4: Change the question used as a filter in `filter`
+> - Step 5: Change the `filter_schema` with the schema of the filter question.
+> - Step 6: Set the `type` to `inclusive`
+
 ```javascript
-multiple_choice({
-  /* Question code to apply these settings */
-  question_code: "Q1",
-  randomize: {
-    answer_groups: [
-      [1, 2, 3],
-      [99], // Anchored since only one
-      [999], // Anchored since only one
-    ],
-    randomize_groups: false,
-  },
+// Copy and paste library URLS separated by commas
+let scripts = ["https://survey-library.azurewebsites.net/multiple_choice.js"];
+
+let promises = scripts.map((script) => {
+  return new Promise((resolve, reject) => {
+    document.querySelector("body").style.opacity = "0";
+    let s = document.createElement("script");
+    s.src = script;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
 });
+
+Promise.all(promises)
+  .then(() => {
+    /* Write scripts below this comment */
+
+    multiple_choice({
+      /* Question code to apply these settings */
+      question_code: "Q2",
+      array_filter: {
+        filter: "Q1",
+        filter_schema: "Q1xSCHEMA",
+        type: "inclusive" // includes all checked answers in the filter
+      }
+    });
+
+    /* Write scripts above this comment */
+    document.querySelector("body").style.opacity = "1";
+  })
+  /* If a library could not be imported throw an error */
+  .catch((error) => {
+    console.error(`Failed to load script: ${error}`);
+  });
 ```
 
 ### For open text(s)
 
+> [!IMPORTANT]
+> Dump the schema means to save the answer codes and their order in an open text question.
+> Only use in case you need to make an array filter using this question.
+
+> - Step 1: Copy and paste the template into the Javascript editor.
+> - Step 2. Add the library URL for multiple open text in the `scripts` list in quotes.
+> - Step 3: Change the question code in `question_code`.
+> - Step 4: Change the question used as a filter in `filter`
+> - Step 5: Change the `filter_schema` with the schema of the filter question.
+> - Step 6: Set the `type` to `inclusive`
+
+```javascript
+// Copy and paste library URLS separated by commas
+let scripts = ["https://survey-library.azurewebsites.net/multiple_open_text.js"];
+
+let promises = scripts.map((script) => {
+  return new Promise((resolve, reject) => {
+    document.querySelector("body").style.opacity = "0";
+    let s = document.createElement("script");
+    s.src = script;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+});
+
+Promise.all(promises)
+  .then(() => {
+    /* Write scripts below this comment */
+
+    multiple_open_text({
+      /* Question code to apply these settings */
+      question_code: "Q2",
+      array_filter: {
+        filter: "Q1",
+        filter_schema: "Q1xSCHEMA",
+        type: "inclusive" // includes all checked answers in the filter
+      }
+    });
+
+    /* Write scripts above this comment */
+    document.querySelector("body").style.opacity = "1";
+  })
+  /* If a library could not be imported throw an error */
+  .catch((error) => {
+    console.error(`Failed to load script: ${error}`);
+  });
+```
+
 ### For ranking
 
+> [!IMPORTANT]
+> Dump the schema means to save the answer codes and their order in an open text question.
+> Only use in case you need to make an array filter using this question.
+
+> - Step 1: Copy and paste the template into the Javascript editor.
+> - Step 2. Add the library URL for multiple open text in the `scripts` list in quotes.
+> - Step 3: Change the question code in `question_code`.
+> - Step 4: Change the question used as a filter in `filter`
+> - Step 5: Change the `filter_schema` with the schema of the filter question.
+> - Step 6: Set the `type` to `inclusive`
+
+```javascript
+// Copy and paste library URLS separated by commas
+let scripts = ["https://survey-library.azurewebsites.net/ranking.js"];
+
+let promises = scripts.map((script) => {
+  return new Promise((resolve, reject) => {
+    document.querySelector("body").style.opacity = "0";
+    let s = document.createElement("script");
+    s.src = script;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+});
+
+Promise.all(promises)
+  .then(() => {
+    /* Write scripts below this comment */
+
+    ranking({
+      /* Question code to apply these settings */
+      question_code: "Q2",
+      array_filter: {
+        filter: "Q1",
+        filter_schema: "Q1xSCHEMA",
+        type: "inclusive" // includes all checked answers in the filter
+      }
+    });
+
+    /* Write scripts above this comment */
+    document.querySelector("body").style.opacity = "1";
+  })
+  /* If a library could not be imported throw an error */
+  .catch((error) => {
+    console.error(`Failed to load script: ${error}`);
+  });
+```
+
 ## **Example**: Array filter (exclusive)
+
+### For single choice
+
+> [!IMPORTANT]
+> Dump the schema means to save the answer codes and their order in an open text question.
+> Only use in case you need to make an array filter using this question.
+
+> - Step 1: Copy and paste the template into the Javascript editor.
+> - Step 2. Add the library URL for single choice in the `scripts` list in quotes.
+> - Step 3: Change the question code in `question_code`.
+> - Step 4: Change the question used as a filter in `filter`
+> - Step 5: Change the `filter_schema` with the schema of the filter question.
+> - Step 6: Set the `type` to `exclusive`
+
+```javascript
+// Copy and paste library URLS separated by commas
+let scripts = ["https://survey-library.azurewebsites.net/single_choice.js"];
+
+let promises = scripts.map((script) => {
+  return new Promise((resolve, reject) => {
+    document.querySelector("body").style.opacity = "0";
+    let s = document.createElement("script");
+    s.src = script;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+});
+
+Promise.all(promises)
+  .then(() => {
+    /* Write scripts below this comment */
+
+    single_choice({
+      /* Question code to apply these settings */
+      question_code: "Q2",
+      array_filter: {
+        filter: "Q1",
+        filter_schema: "Q1xSCHEMA",
+        type: "exclusive" // includes all checked answers in the filter
+      }
+    });
+
+    /* Write scripts above this comment */
+    document.querySelector("body").style.opacity = "1";
+  })
+  /* If a library could not be imported throw an error */
+  .catch((error) => {
+    console.error(`Failed to load script: ${error}`);
+  });
+```
+
+### For multiple choice
+
+> [!IMPORTANT]
+> Dump the schema means to save the answer codes and their order in an open text question.
+> Only use in case you need to make an array filter using this question.
+
+> - Step 1: Copy and paste the template into the Javascript editor.
+> - Step 2. Add the library URL for multiple choice in the `scripts` list in quotes.
+> - Step 3: Change the question code in `question_code`.
+> - Step 4: Change the question used as a filter in `filter`
+> - Step 5: Change the `filter_schema` with the schema of the filter question.
+> - Step 6: Set the `type` to `exclusive`
+
+```javascript
+// Copy and paste library URLS separated by commas
+let scripts = ["https://survey-library.azurewebsites.net/multiple_choice.js"];
+
+let promises = scripts.map((script) => {
+  return new Promise((resolve, reject) => {
+    document.querySelector("body").style.opacity = "0";
+    let s = document.createElement("script");
+    s.src = script;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+});
+
+Promise.all(promises)
+  .then(() => {
+    /* Write scripts below this comment */
+
+    multiple_choice({
+      /* Question code to apply these settings */
+      question_code: "Q2",
+      array_filter: {
+        filter: "Q1",
+        filter_schema: "Q1xSCHEMA",
+        type: "exclusive" // includes all checked answers in the filter
+      }
+    });
+
+    /* Write scripts above this comment */
+    document.querySelector("body").style.opacity = "1";
+  })
+  /* If a library could not be imported throw an error */
+  .catch((error) => {
+    console.error(`Failed to load script: ${error}`);
+  });
+```
+
+### For open text(s)
+
+> [!IMPORTANT]
+> Dump the schema means to save the answer codes and their order in an open text question.
+> Only use in case you need to make an array filter using this question.
+
+> - Step 1: Copy and paste the template into the Javascript editor.
+> - Step 2. Add the library URL for multiple open text in the `scripts` list in quotes.
+> - Step 3: Change the question code in `question_code`.
+> - Step 4: Change the question used as a filter in `filter`
+> - Step 5: Change the `filter_schema` with the schema of the filter question.
+> - Step 6: Set the `type` to `exclusive`
+
+```javascript
+// Copy and paste library URLS separated by commas
+let scripts = ["https://survey-library.azurewebsites.net/multiple_open_text.js"];
+
+let promises = scripts.map((script) => {
+  return new Promise((resolve, reject) => {
+    document.querySelector("body").style.opacity = "0";
+    let s = document.createElement("script");
+    s.src = script;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+});
+
+Promise.all(promises)
+  .then(() => {
+    /* Write scripts below this comment */
+
+    multiple_open_text({
+      /* Question code to apply these settings */
+      question_code: "Q2",
+      array_filter: {
+        filter: "Q1",
+        filter_schema: "Q1xSCHEMA",
+        type: "exclusive" // excludes all checked answers in the filter
+      }
+    });
+
+    /* Write scripts above this comment */
+    document.querySelector("body").style.opacity = "1";
+  })
+  /* If a library could not be imported throw an error */
+  .catch((error) => {
+    console.error(`Failed to load script: ${error}`);
+  });
+```
+
+### For ranking
+
+> [!IMPORTANT]
+> Dump the schema means to save the answer codes and their order in an open text question.
+> Only use in case you need to make an array filter using this question.
+
+> - Step 1: Copy and paste the template into the Javascript editor.
+> - Step 2. Add the library URL for multiple open text in the `scripts` list in quotes.
+> - Step 3: Change the question code in `question_code`.
+> - Step 4: Change the question used as a filter in `filter`
+> - Step 5: Change the `filter_schema` with the schema of the filter question.
+> - Step 6: Set the `type` to `exclusive`
+
+```javascript
+// Copy and paste library URLS separated by commas
+let scripts = ["https://survey-library.azurewebsites.net/ranking.js"];
+
+let promises = scripts.map((script) => {
+  return new Promise((resolve, reject) => {
+    document.querySelector("body").style.opacity = "0";
+    let s = document.createElement("script");
+    s.src = script;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+});
+
+Promise.all(promises)
+  .then(() => {
+    /* Write scripts below this comment */
+
+    ranking({
+      /* Question code to apply these settings */
+      question_code: "Q2",
+      array_filter: {
+        filter: "Q1",
+        filter_schema: "Q1xSCHEMA",
+        type: "exclusive" // excludes all checked answers in the filter
+      }
+    });
+
+    /* Write scripts above this comment */
+    document.querySelector("body").style.opacity = "1";
+  })
+  /* If a library could not be imported throw an error */
+  .catch((error) => {
+    console.error(`Failed to load script: ${error}`);
+  });
+```
 
 ## Example: Validate selections
 
