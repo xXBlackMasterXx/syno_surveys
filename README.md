@@ -1,4 +1,4 @@
-# Syno Survey Library
+# Survey Library
 
 In order to make use of this library, copy this code into the Javascript editor in the page.
 Once done, copy and paste the library URLS you want to use and configure them
